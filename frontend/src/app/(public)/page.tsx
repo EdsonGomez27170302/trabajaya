@@ -4,6 +4,8 @@ import { HeroSection } from "@/features/public/landing/components/hero-section";
 import { LatestJobsSection } from "@/features/public/landing/components/latest-jobs-section";
 import { StatsSection } from "@/features/public/landing/components/stats-section";
 
+export const dynamic = "force-dynamic";
+
 export default function LandingPage() {
   return (
     <>

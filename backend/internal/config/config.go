@@ -1,0 +1,87 @@
+package config
+
+import (
+	"os"
+	"strconv"
+
+	"github.com/joho/godotenv"
+)
+
+type Config struct {
+	Port        string
+	DBHost      string
+	DBPort      string
+	DBUser      string
+	DBPassword  string
+	DBName      string
+	DBSSLMode   string
+	AutoMigrate bool
+
+	JWTSecret      string
+	JWTExpiresHours int
+
+	SMTPHost     string
+	SMTPPort     string
+	SMTPUser     string
+	SMTPPassword string
+	SMTPFrom     string
+
+	FrontendURL               string
+	CORSOrigin                string
+	InstitutionalEmailDomain  string
+	UploadsDir                string
+}
+
+func Load() *Config {
+	_ = godotenv.Load()
+
+	return &Config{
+		Port:        getEnv("PORT", "3001"),
+		DBHost:      getEnv("DB_HOST", "localhost"),
+		DBPort:      getEnv("DB_PORT", "5432"),
+		DBUser:      getEnv("DB_USER", "postgres"),
+		DBPassword:  getEnv("DB_PASSWORD", "postgres"),
+		DBName:      getEnv("DB_NAME", "trabajaya"),
+		DBSSLMode:   getEnv("DB_SSLMODE", "disable"),
+		AutoMigrate: getEnvBool("AUTO_MIGRATE", true),
+
+		JWTSecret:       getEnv("JWT_SECRET", "change-me"),
+		JWTExpiresHours: getEnvInt("JWT_EXPIRES_HOURS", 72),
+
+		SMTPHost:     getEnv("SMTP_HOST", ""),
+		SMTPPort:     getEnv("SMTP_PORT", "587"),
+		SMTPUser:     getEnv("SMTP_USER", ""),
+		SMTPPassword: getEnv("SMTP_PASSWORD", ""),
+		SMTPFrom:     getEnv("SMTP_FROM", "no-reply@trabajaya.pe"),
+
+		FrontendURL:              getEnv("FRONTEND_URL", "http://localhost:3000"),
+		CORSOrigin:               getEnv("CORS_ORIGIN", "http://localhost:3000"),
+		InstitutionalEmailDomain: getEnv("INSTITUTIONAL_EMAIL_DOMAIN", "unsch.edu.pe"),
+		UploadsDir:               getEnv("UPLOADS_DIR", "./uploads"),
+	}
+}
+
+func getEnv(key, fallback string) string {
+	if v, ok := os.LookupEnv(key); ok && v != "" {
+		return v
+	}
+	return fallback
+}
+
+func getEnvInt(key string, fallback int) int {
+	if v, ok := os.LookupEnv(key); ok && v != "" {
+		if n, err := strconv.Atoi(v); err == nil {
+			return n
+		}
+	}
+	return fallback
+}
+
+func getEnvBool(key string, fallback bool) bool {
+	if v, ok := os.LookupEnv(key); ok && v != "" {
+		if b, err := strconv.ParseBool(v); err == nil {
+			return b
+		}
+	}
+	return fallback
+}
