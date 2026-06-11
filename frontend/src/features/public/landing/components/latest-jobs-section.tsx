@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Star } from "lucide-react";
 
 import { getLatestJobs } from "@/features/public/landing/actions/get-landing-data";
-import { formatSalary, formatScheduleSummary } from "@/lib/format";
+import { ASSET_BASE_URL } from "@/lib/config";
+import { formatSalary } from "@/lib/format";
 
 export async function LatestJobsSection() {
   const jobs = await getLatestJobs(3);
@@ -11,10 +13,10 @@ export async function LatestJobsSection() {
       <div className="flex items-end justify-between gap-4">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-primary">
-            Últimas ofertas
+            Ofertas destacadas
           </p>
           <h2 className="mt-2 text-2xl font-bold text-foreground">
-            Vacantes destacadas para empezar hoy
+            Vacantes que resaltan hoy
           </h2>
         </div>
         <Link
@@ -30,28 +32,50 @@ export async function LatestJobsSection() {
           {jobs.map((job) => (
             <article
               key={job.id}
-              className="rounded-3xl border border-border bg-card p-6 text-card-foreground shadow-sm"
+              className="group relative overflow-hidden rounded-3xl border border-amber-300 bg-linear-to-br from-amber-50 to-card p-6 shadow-sm shadow-amber-100 transition hover:shadow-md hover:shadow-amber-200 dark:border-amber-700/60 dark:from-amber-950/25 dark:to-card dark:shadow-amber-950/50"
             >
-              <div className="flex items-center justify-between gap-3">
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {/* Top accent bar */}
+              <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-amber-400 via-amber-300 to-amber-500 dark:from-amber-600 dark:via-amber-500 dark:to-amber-700" />
+
+              {/* Header row */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  {job.company?.logo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={`${ASSET_BASE_URL}${job.company.logo_url}`}
+                      alt={job.company.company_name}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-full bg-muted" />
+                  )}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {job.company?.company_name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{job.zone}</p>
+                  </div>
+                </div>
+
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                  <Star className="size-3 fill-amber-500 dark:fill-amber-400" />
                   Destacado
                 </span>
-                <span className="text-sm text-muted-foreground">
-                  {job.zone}
-                </span>
               </div>
-              <h3 className="mt-4 text-xl font-semibold text-foreground">
+
+              <h3 className="mt-4 text-lg font-bold text-foreground">
                 {job.title}
               </h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {job.company?.company_name}
-              </p>
-              <p className="mt-4 text-sm text-foreground">
-                {formatSalary(job)}
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {formatScheduleSummary(job.schedule)}
-              </p>
+
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-sm font-semibold text-foreground">
+                  {formatSalary(job)}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {job.vacancies} vacante{job.vacancies === 1 ? "" : "s"}
+                </span>
+              </div>
             </article>
           ))}
         </div>

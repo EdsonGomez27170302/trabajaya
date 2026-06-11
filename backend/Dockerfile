@@ -19,6 +19,6 @@ WORKDIR /app
 COPY --from=build /out/api /app/api
 COPY --from=build /out/seed-images /app/seed-images
 
-EXPOSE 3001
+EXPOSE 3002
 
 CMD ["/app/api"]

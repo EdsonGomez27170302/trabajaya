@@ -30,13 +30,16 @@ type Config struct {
 	CORSOrigin                string
 	InstitutionalEmailDomain  string
 	UploadsDir                string
+
+	MercadoPagoAccessToken string
+	MercadoPagoPremiumPrice float64
 }
 
 func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		Port:        getEnv("PORT", "3001"),
+		Port:        getEnv("PORT", "3002"),
 		DBHost:      getEnv("DB_HOST", "localhost"),
 		DBPort:      getEnv("DB_PORT", "5432"),
 		DBUser:      getEnv("DB_USER", "postgres"),
@@ -58,6 +61,9 @@ func Load() *Config {
 		CORSOrigin:               getEnv("CORS_ORIGIN", "http://localhost:3000"),
 		InstitutionalEmailDomain: getEnv("INSTITUTIONAL_EMAIL_DOMAIN", "unsch.edu.pe"),
 		UploadsDir:               getEnv("UPLOADS_DIR", "./uploads"),
+
+		MercadoPagoAccessToken:  getEnv("MERCADOPAGO_ACCESS_TOKEN", ""),
+		MercadoPagoPremiumPrice: getEnvFloat("MERCADOPAGO_PREMIUM_PRICE", 29.90),
 	}
 }
 
@@ -72,6 +78,15 @@ func getEnvInt(key string, fallback int) int {
 	if v, ok := os.LookupEnv(key); ok && v != "" {
 		if n, err := strconv.Atoi(v); err == nil {
 			return n
+		}
+	}
+	return fallback
+}
+
+func getEnvFloat(key string, fallback float64) float64 {
+	if v, ok := os.LookupEnv(key); ok && v != "" {
+		if f, err := strconv.ParseFloat(v, 64); err == nil {
+			return f
 		}
 	}
 	return fallback

@@ -1,5 +1,5 @@
-import { CompanyHeader } from "@/features/empresa/components/company-header";
-import { CompanySidebar } from "@/features/empresa/components/company-sidebar";
+import { RouteGuard } from "@/components/shared/route-guard";
+import { EmpresaShell } from "@/components/layout/empresa-shell";
 
 export default function EmpresaLayout({
   children,
@@ -7,12 +7,8 @@ export default function EmpresaLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-background">
-      <CompanySidebar />
-      <div className="flex flex-1 flex-col">
-        <CompanyHeader />
-        <main className="flex-1 px-6 py-8">{children}</main>
-      </div>
-    </div>
+    <RouteGuard role="company">
+      <EmpresaShell>{children}</EmpresaShell>
+    </RouteGuard>
   );
 }

@@ -1,5 +1,5 @@
-import { StudentHeader } from "@/features/estudiante/components/student-header";
-import { StudentSidebar } from "@/features/estudiante/components/student-sidebar";
+import { RouteGuard } from "@/components/shared/route-guard";
+import { EstudianteShell } from "@/components/layout/estudiante-shell";
 
 export default function EstudianteLayout({
   children,
@@ -7,12 +7,8 @@ export default function EstudianteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-background">
-      <StudentSidebar />
-      <div className="flex flex-1 flex-col">
-        <StudentHeader />
-        <main className="flex-1 px-6 py-8">{children}</main>
-      </div>
-    </div>
+    <RouteGuard role="student">
+      <EstudianteShell>{children}</EstudianteShell>
+    </RouteGuard>
   );
 }

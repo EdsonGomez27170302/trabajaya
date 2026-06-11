@@ -26,6 +26,7 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 	notificationHandler := handlers.NewNotificationHandler(h)
 	adminHandler := handlers.NewAdminHandler(h)
 	statsHandler := handlers.NewStatsHandler(h)
+	paymentHandler := handlers.NewPaymentHandler(h)
 
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
@@ -76,7 +77,12 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			company.DELETE("/jobs/:id", jobHandler.DeleteJob)
 			company.GET("/jobs/:id/candidates", jobHandler.JobCandidates)
 			company.PUT("/applications/:id", applicationHandler.UpdateApplicationStatus)
+			company.POST("/payment/create-preference", paymentHandler.CreatePreference)
+			company.GET("/payment/confirm", paymentHandler.ConfirmPayment)
 		}
+
+		// Mercado Pago webhook (public — MP calls this from their servers)
+		api.POST("/payments/webhook", paymentHandler.Webhook)
 
 		// Notifications (any authenticated role)
 		notifications := api.Group("/notifications")
