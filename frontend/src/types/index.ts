@@ -24,6 +24,7 @@ export interface StudentProfile {
   zone: string;
   profile_photo: string;
   is_available: boolean;
+  is_featured: boolean;
 }
 
 export interface CompanyProfile {
@@ -58,6 +59,9 @@ export interface Job {
   schedule: Record<string, string[]>;
   vacancies: number;
   status: "active" | "paused" | "closed";
+  contact_phone: string;
+  contact_email: string;
+  contact_address: string;
   is_featured: boolean;
   views_count: number;
   expires_at: string;

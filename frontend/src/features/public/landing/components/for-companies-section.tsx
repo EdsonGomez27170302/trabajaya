@@ -16,12 +16,20 @@ export function ForCompaniesSection() {
         Centraliza tu búsqueda, destaca vacantes y mejora tu alcance con un
         canal universitario.
       </p>
-      <Link
-        href="/auth/register/empresa"
-        className="mt-6 inline-flex rounded-full bg-background px-5 py-3 font-semibold text-foreground transition hover:bg-muted"
-      >
-        Registrar mi empresa
-      </Link>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link
+          href="/auth/register/empresa"
+          className="inline-flex rounded-full bg-background px-5 py-3 font-semibold text-foreground transition hover:bg-muted"
+        >
+          Registrar mi empresa
+        </Link>
+        <Link
+          href="#talentos"
+          className="inline-flex rounded-full border border-accent-foreground/20 px-5 py-3 font-semibold text-accent-foreground transition hover:bg-accent-foreground/10"
+        >
+          Ver talentos disponibles →
+        </Link>
+      </div>
     </article>
   );
 }

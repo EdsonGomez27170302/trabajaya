@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { Job } from "@/types";
+import type { Job, StudentProfile } from "@/types";
 
 export interface PlatformStats {
   active_jobs: number;
@@ -22,12 +22,21 @@ export async function getPlatformStats(): Promise<PlatformStats> {
   }
 }
 
-export async function getLatestJobs(limit = 3): Promise<Job[]> {
+export async function getLatestJobs(search?: string): Promise<Job[]> {
   try {
-    const { data } = await api.get<{ data: Job[] }>("/jobs/featured", {
-      params: { limit },
-    });
-    return data.data;
+    const params: Record<string, string> = {};
+    if (search) params.search = search;
+    const { data } = await api.get<{ data: Job[] }>("/jobs", { params });
+    return data.data ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getAvailableStudents(): Promise<StudentProfile[]> {
+  try {
+    const { data } = await api.get<{ data: StudentProfile[] }>("/students");
+    return data.data ?? [];
   } catch {
     return [];
   }

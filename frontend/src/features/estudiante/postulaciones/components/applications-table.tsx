@@ -27,8 +27,8 @@ export function ApplicationsTable() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api.get<Application[]>("/student/applications")
-      .then(({ data }) => setApplications(data))
+    api.get<{ data: Application[] }>("/student/applications")
+      .then(({ data }) => setApplications(data.data ?? []))
       .catch(() => setError("No se pudieron cargar las postulaciones."))
       .finally(() => setLoading(false));
   }, []);

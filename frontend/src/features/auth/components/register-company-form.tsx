@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 
+import { Eye, EyeOff } from "lucide-react";
+
 import { api } from "@/lib/api";
 
 const SECTORS = [
@@ -47,6 +49,8 @@ type FormData = z.infer<typeof schema>;
 export function RegisterCompanyForm() {
   const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const {
     register,
@@ -136,13 +140,23 @@ export function RegisterCompanyForm() {
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Contraseña</label>
-          <input {...register("password")} type="password" placeholder="••••••••" className={field} />
+          <div className="relative">
+            <input {...register("password")} type={showPassword ? "text" : "password"} placeholder="••••••••" className={`${field} pr-10`} />
+            <button type="button" onClick={() => setShowPassword((v) => !v)} tabIndex={-1} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
           {errors.password && <p className={errCls}>{errors.password.message}</p>}
         </div>
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Confirmar contraseña</label>
-          <input {...register("confirm_password")} type="password" placeholder="••••••••" className={field} />
+          <div className="relative">
+            <input {...register("confirm_password")} type={showConfirm ? "text" : "password"} placeholder="••••••••" className={`${field} pr-10`} />
+            <button type="button" onClick={() => setShowConfirm((v) => !v)} tabIndex={-1} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              {showConfirm ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
           {errors.confirm_password && <p className={errCls}>{errors.confirm_password.message}</p>}
         </div>
 

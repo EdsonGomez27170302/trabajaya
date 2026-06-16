@@ -7,6 +7,8 @@ import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@/components/ui/button";
@@ -32,6 +34,7 @@ export function LoginForm() {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [serverError, setServerError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -56,6 +59,13 @@ export function LoginForm() {
   return (
     <Card className="w-full">
       <CardHeader>
+        <Link
+          href="/"
+          className="mb-2 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="size-4" />
+          Volver al inicio
+        </Link>
         <p className="text-sm font-semibold uppercase tracking-[0.35em] text-primary">
           Acceso
         </p>
@@ -84,13 +94,24 @@ export function LoginForm() {
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              {...register("password")}
-              type="password"
-              placeholder="••••••••"
-              autoComplete="current-password"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-xs text-destructive">{errors.password.message}</p>
             )}

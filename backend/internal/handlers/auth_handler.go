@@ -212,6 +212,13 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	var user models.User
 	err := h.DB.Where("username = ? OR email = ?", req.Username, req.Username).First(&user).Error
 	if err != nil {
+		// Intentar por correo institucional del perfil de estudiante
+		var profile models.StudentProfile
+		if err2 := h.DB.Where("institutional_email = ?", req.Username).First(&profile).Error; err2 == nil {
+			err = h.DB.First(&user, profile.UserID).Error
+		}
+	}
+	if err != nil {
 		utils.Error(c, http.StatusUnauthorized, "credenciales inválidas")
 		return
 	}

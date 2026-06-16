@@ -44,6 +44,9 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 		api.GET("/jobs/featured", jobHandler.FeaturedJobs)
 		api.GET("/jobs/:id", jobHandler.GetJob)
 
+		// Public student directory
+		api.GET("/students", profileHandler.ListAvailableStudents)
+
 		// Auth
 		auth := api.Group("/auth")
 		{
@@ -63,6 +66,8 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			student.GET("/applications", applicationHandler.MyApplications)
 			student.POST("/jobs/:id/apply", applicationHandler.Apply)
 			student.DELETE("/applications/:id", applicationHandler.WithdrawApplication)
+			student.POST("/payment/create-preference", paymentHandler.CreateStudentPreference)
+			student.GET("/payment/confirm", paymentHandler.ConfirmStudentPayment)
 		}
 
 		// Company

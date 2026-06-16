@@ -22,6 +22,9 @@ type Job struct {
 	Schedule      JSONStringArrayMap  `gorm:"type:jsonb" json:"schedule"`
 	Vacancies     int                 `json:"vacancies"`
 	Status        string              `gorm:"default:active;index" json:"status"` // active | paused | closed
+	ContactPhone   string              `json:"contact_phone"`
+	ContactEmail   string              `json:"contact_email"`
+	ContactAddress string              `json:"contact_address"`
 	IsFeatured    bool                `gorm:"default:false" json:"is_featured"`
 	ViewsCount    int                 `gorm:"default:0" json:"views_count"`
 	ExpiresAt     *time.Time          `json:"expires_at"`

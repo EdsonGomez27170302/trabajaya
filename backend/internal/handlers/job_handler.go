@@ -96,20 +96,23 @@ func (h *JobHandler) GetJob(c *gin.Context) {
 }
 
 type jobRequest struct {
-	Title        string                     `json:"title" binding:"required"`
-	Description  string                     `json:"description"`
-	Requirements string                     `json:"requirements"`
-	Category     string                     `json:"category"`
-	Modality     string                     `json:"modality"`
-	Zone         string                     `json:"zone"`
-	Salary       float64                    `json:"salary"`
-	SalaryType   string                     `json:"salary_type"`
-	HoursPerWeek int                        `json:"hours_per_week"`
-	Schedule     models.JSONStringArrayMap  `json:"schedule"`
-	Vacancies    int                        `json:"vacancies"`
-	Status       string                     `json:"status"`
-	IsFeatured   bool                       `json:"is_featured"`
-	ExpiresAt    *string                    `json:"expires_at"`
+	Title          string                    `json:"title" binding:"required"`
+	Description    string                    `json:"description"`
+	Requirements   string                    `json:"requirements"`
+	Category       string                    `json:"category"`
+	Modality       string                    `json:"modality"`
+	Zone           string                    `json:"zone"`
+	Salary         float64                   `json:"salary"`
+	SalaryType     string                    `json:"salary_type"`
+	HoursPerWeek   int                       `json:"hours_per_week"`
+	Schedule       models.JSONStringArrayMap `json:"schedule"`
+	Vacancies      int                       `json:"vacancies"`
+	Status         string                    `json:"status"`
+	IsFeatured     bool                      `json:"is_featured"`
+	ExpiresAt      *string                   `json:"expires_at"`
+	ContactPhone   string                    `json:"contact_phone"`
+	ContactEmail   string                    `json:"contact_email"`
+	ContactAddress string                    `json:"contact_address"`
 }
 
 // MyJobs returns all jobs (any status) belonging to the authenticated company.
@@ -146,20 +149,23 @@ func (h *JobHandler) CreateJob(c *gin.Context) {
 	}
 
 	job := models.Job{
-		CompanyID:    company.ID,
-		Title:        req.Title,
-		Description:  req.Description,
-		Requirements: req.Requirements,
-		Category:     req.Category,
-		Modality:     req.Modality,
-		Zone:         req.Zone,
-		Salary:       req.Salary,
-		SalaryType:   req.SalaryType,
-		HoursPerWeek: req.HoursPerWeek,
-		Schedule:     req.Schedule,
-		Vacancies:    req.Vacancies,
-		Status:       defaultStatus(req.Status),
-		IsFeatured:   req.IsFeatured && company.Plan == "premium",
+		CompanyID:      company.ID,
+		Title:          req.Title,
+		Description:    req.Description,
+		Requirements:   req.Requirements,
+		Category:       req.Category,
+		Modality:       req.Modality,
+		Zone:           req.Zone,
+		Salary:         req.Salary,
+		SalaryType:     req.SalaryType,
+		HoursPerWeek:   req.HoursPerWeek,
+		Schedule:       req.Schedule,
+		Vacancies:      req.Vacancies,
+		Status:         defaultStatus(req.Status),
+		IsFeatured:     req.IsFeatured && company.Plan == "premium",
+		ContactPhone:   req.ContactPhone,
+		ContactEmail:   req.ContactEmail,
+		ContactAddress: req.ContactAddress,
 	}
 
 	if req.ExpiresAt != nil {
@@ -209,6 +215,9 @@ func (h *JobHandler) UpdateJob(c *gin.Context) {
 	job.Vacancies = req.Vacancies
 	job.Status = defaultStatus(req.Status)
 	job.IsFeatured = req.IsFeatured && company.Plan == "premium"
+	job.ContactPhone = req.ContactPhone
+	job.ContactEmail = req.ContactEmail
+	job.ContactAddress = req.ContactAddress
 
 	if req.ExpiresAt != nil {
 		if t, err := parseTime(*req.ExpiresAt); err == nil {

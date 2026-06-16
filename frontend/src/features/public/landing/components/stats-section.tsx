@@ -10,19 +10,19 @@ export async function StatsSection() {
   ];
 
   return (
-    <section className="bg-primary text-primary-foreground">
-      <div className="mx-auto grid max-w-7xl gap-6 px-6 py-10 sm:grid-cols-3 lg:px-8">
-        <p className="col-span-full text-sm uppercase tracking-[0.3em] text-primary-foreground/70">
+    <section className="border-y border-border bg-muted/50">
+      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8">
+        <p className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
           Hoy en la plataforma
         </p>
-        {items.map((stat) => (
-          <div key={stat.label}>
-            <p className="text-3xl font-black">{stat.value}</p>
-            <p className="mt-1 text-sm text-primary-foreground/80">
-              {stat.label}
-            </p>
-          </div>
-        ))}
+        <div className="grid gap-6 sm:grid-cols-3">
+          {items.map((stat) => (
+            <div key={stat.label} className="flex items-center gap-4">
+              <p className="text-4xl font-black text-primary">{stat.value}</p>
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

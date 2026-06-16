@@ -33,11 +33,11 @@ export function StudentDashboardView() {
   useEffect(() => {
     Promise.all([
       api.get<StudentProfile>("/student/profile"),
-      api.get<Application[]>("/student/applications"),
+      api.get<{ data: Application[] }>("/student/applications"),
     ])
       .then(([pRes, aRes]) => {
         setProfile(pRes.data);
-        setApplications(aRes.data);
+        setApplications(aRes.data.data ?? []);
       })
       .finally(() => setLoading(false));
   }, []);

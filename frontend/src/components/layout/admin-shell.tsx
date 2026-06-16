@@ -9,7 +9,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Mobile drawer overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
@@ -29,9 +29,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <AdminSidebar />
 
       {/* Main content */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col overflow-hidden">
         <AdminHeader onMenuToggle={() => setMobileOpen((v) => !v)} />
-        <main className="flex-1 px-4 py-6 md:px-6 md:py-8">{children}</main>
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-6 md:py-8">{children}</main>
       </div>
     </div>
   );

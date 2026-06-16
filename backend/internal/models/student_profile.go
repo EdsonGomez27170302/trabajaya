@@ -16,4 +16,5 @@ type StudentProfile struct {
 	Zone                string              `json:"zone"`
 	ProfilePhoto        string              `json:"profile_photo"`
 	IsAvailable         bool                `gorm:"default:true" json:"is_available"`
+	IsFeatured          bool                `gorm:"default:false" json:"is_featured"`
 }

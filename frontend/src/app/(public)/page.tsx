@@ -1,23 +1,21 @@
-import { ForCompaniesSection } from "@/features/public/landing/components/for-companies-section";
-import { ForStudentsSection } from "@/features/public/landing/components/for-students-section";
+import { getAvailableStudents, getLatestJobs } from "@/features/public/landing/actions/get-landing-data";
 import { HeroSection } from "@/features/public/landing/components/hero-section";
-import { LatestJobsSection } from "@/features/public/landing/components/latest-jobs-section";
+import { MainTabsSection } from "@/features/public/landing/components/main-tabs-section";
 import { StatsSection } from "@/features/public/landing/components/stats-section";
 
 export const dynamic = "force-dynamic";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const [jobs, students] = await Promise.all([
+    getLatestJobs(),
+    getAvailableStudents(),
+  ]);
+
   return (
     <>
       <HeroSection />
       <StatsSection />
-      <LatestJobsSection />
-      <section className="border-t border-border bg-muted">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-12 lg:grid-cols-2 lg:px-8">
-          <ForStudentsSection />
-          <ForCompaniesSection />
-        </div>
-      </section>
+      <MainTabsSection jobs={jobs} students={students} />
     </>
   );
 }
