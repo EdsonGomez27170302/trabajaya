@@ -17,10 +17,6 @@ func NewEmailService(cfg *config.Config) *EmailService {
 	return &EmailService{cfg: cfg}
 }
 
-// SendVerificationEmail sends an account verification email via Gmail SMTP
-// (STARTTLS on port 587). If SMTP_HOST is not configured, it logs the
-// verification link to the console instead, so the app remains usable in
-// development without real credentials.
 func (s *EmailService) SendVerificationEmail(toEmail, toName, token string) error {
 	link := fmt.Sprintf("%s/auth/verify-email?token=%s", s.cfg.FrontendURL, token)
 

@@ -47,7 +47,6 @@ export async function LatestJobsSection({ search }: { search?: string }) {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     {job.company?.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={`${ASSET_BASE_URL}${job.company.logo_url}`}
                         alt={job.company.company_name}
@@ -90,7 +89,6 @@ export async function LatestJobsSection({ search }: { search?: string }) {
               >
                 <div className="flex items-start gap-3">
                   {job.company?.logo_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={`${ASSET_BASE_URL}${job.company.logo_url}`}
                       alt={job.company.company_name}

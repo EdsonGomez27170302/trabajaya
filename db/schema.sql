@@ -1,17 +1,3 @@
--- TrabajaYa Ayacucho - esquema de base de datos
---
--- Pega este archivo completo en Adminer (SQL command) o en psql para crear
--- todas las tablas. Es seguro ejecutarlo en una base de datos vacía; el
--- backend (GORM AutoMigrate) no modificará estas tablas si ya existen con
--- estos nombres y columnas.
---
--- Orden de ejecución recomendado:
---   1) schema.sql  (este archivo)
---   2) seed.sql    (datos de ejemplo: empresas, estudiantes, ofertas, etc.)
-
--- =========================================================
--- users
--- =========================================================
 CREATE TABLE IF NOT EXISTS users (
     id                              BIGSERIAL PRIMARY KEY,
     username                        VARCHAR(255) NOT NULL UNIQUE,
@@ -29,9 +15,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_users_role ON users (role);
 CREATE INDEX IF NOT EXISTS idx_users_verification_token ON users (verification_token);
 
--- =========================================================
--- student_profiles
--- =========================================================
 CREATE TABLE IF NOT EXISTS student_profiles (
     id                   BIGSERIAL PRIMARY KEY,
     user_id              BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
@@ -50,9 +33,6 @@ CREATE TABLE IF NOT EXISTS student_profiles (
     is_available         BOOLEAN      NOT NULL DEFAULT TRUE
 );
 
--- =========================================================
--- company_profiles
--- =========================================================
 CREATE TABLE IF NOT EXISTS company_profiles (
     id            BIGSERIAL PRIMARY KEY,
     user_id       BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
@@ -69,9 +49,6 @@ CREATE TABLE IF NOT EXISTS company_profiles (
     plan          VARCHAR(20)  NOT NULL DEFAULT 'free'
 );
 
--- =========================================================
--- jobs
--- =========================================================
 CREATE TABLE IF NOT EXISTS jobs (
     id              BIGSERIAL PRIMARY KEY,
     company_id      BIGINT NOT NULL REFERENCES company_profiles(id) ON DELETE CASCADE,
@@ -101,9 +78,6 @@ CREATE INDEX IF NOT EXISTS idx_jobs_zone ON jobs (zone);
 CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs (status);
 CREATE INDEX IF NOT EXISTS idx_jobs_deleted_at ON jobs (deleted_at);
 
--- =========================================================
--- applications
--- =========================================================
 CREATE TABLE IF NOT EXISTS applications (
     id            BIGSERIAL PRIMARY KEY,
     job_id        BIGINT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
@@ -116,9 +90,6 @@ CREATE TABLE IF NOT EXISTS applications (
 
 CREATE INDEX IF NOT EXISTS idx_applications_status ON applications (status);
 
--- =========================================================
--- notifications
--- =========================================================
 CREATE TABLE IF NOT EXISTS notifications (
     id          BIGSERIAL PRIMARY KEY,
     user_id     BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,

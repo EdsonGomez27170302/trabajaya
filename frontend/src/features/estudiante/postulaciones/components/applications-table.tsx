@@ -75,7 +75,6 @@ export function ApplicationsTable() {
             >
               <div className="flex items-center gap-3">
                 {app.job?.company?.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={`${ASSET_BASE_URL}${app.job.company.logo_url}`}
                     alt={app.job.company.company_name}

@@ -13,5 +13,5 @@ type CompanyProfile struct {
 	Website     string `json:"website"`
 	LogoURL     string `json:"logo_url"`
 	IsVerified  bool   `gorm:"default:false" json:"is_verified"`
-	Plan        string `gorm:"default:free" json:"plan"` // free | premium
+	Plan        string `gorm:"default:free" json:"plan"`
 }

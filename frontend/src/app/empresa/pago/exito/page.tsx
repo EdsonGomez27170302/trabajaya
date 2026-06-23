@@ -19,29 +19,35 @@ export default function PagoExitoPage() {
     if (called.current) return;
     called.current = true;
 
-    const paymentId = searchParams.get("payment_id");
-    const status = searchParams.get("status");
+    async function confirm() {
+      const paymentId = searchParams.get("payment_id");
+      const status = searchParams.get("status");
 
-    if (!paymentId || status === "failure") {
-      setState("error");
-      return;
-    }
-    if (status === "pending") {
-      setState("pending");
-      return;
-    }
+      if (!paymentId || status === "failure") {
+        setState("error");
+        return;
+      }
+      if (status === "pending") {
+        setState("pending");
+        return;
+      }
 
-    api
-      .get<{ status: string; upgraded: boolean; job_id?: number }>(`/company/payment/confirm?payment_id=${paymentId}`)
-      .then(({ data }) => {
+      try {
+        const { data } = await api.get<{ status: string; upgraded: boolean; job_id?: number }>(
+          `/company/payment/confirm?payment_id=${paymentId}`
+        );
         if (data.upgraded) {
           if (data.job_id) setJobId(data.job_id);
           setState("success");
         } else {
           setState(data.status === "pending" ? "pending" : "error");
         }
-      })
-      .catch(() => setState("error"));
+      } catch {
+        setState("error");
+      }
+    }
+
+    confirm();
   }, [searchParams]);
 
   if (state === "loading") {
@@ -123,7 +129,6 @@ export default function PagoExitoPage() {
     );
   }
 
-  // error
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="flex max-w-md flex-col items-center gap-6 rounded-3xl border border-border bg-card p-10 text-center shadow-sm">

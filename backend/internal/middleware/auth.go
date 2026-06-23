@@ -48,7 +48,11 @@ func RequireRole(roles ...string) gin.HandlerFunc {
 			return
 		}
 
-		roleStr, _ := role.(string)
+		roleStr, ok := role.(string)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing authorization"})
+			return
+		}
 		for _, r := range roles {
 			if r == roleStr {
 				c.Next()

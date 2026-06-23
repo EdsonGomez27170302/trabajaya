@@ -14,7 +14,6 @@ interface Props {
   students: StudentProfile[];
 }
 
-// ── Job detail modal ──────────────────────────────────────────────────────────
 function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
   return (
     <div
@@ -33,10 +32,8 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
           <X className="size-4" />
         </button>
 
-        {/* Header */}
         <div className="flex items-center gap-3 pr-10">
           {job.company?.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={`${ASSET_BASE_URL}${job.company.logo_url}`}
               alt={job.company.company_name}
@@ -72,7 +69,6 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
           )}
         </div>
 
-        {/* Detalles */}
         <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-border bg-muted/40 p-4 text-sm">
           <div>
             <p className="text-xs text-muted-foreground">Salario</p>
@@ -106,7 +102,6 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
           </div>
         )}
 
-        {/* Contacto */}
         {(job.contact_phone || job.contact_email || job.contact_address) && (
           <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/5 p-4">
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-primary">Contacto</p>
@@ -143,7 +138,6 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
   );
 }
 
-// ── Student detail modal ──────────────────────────────────────────────────────
 function StudentModal({ student, onClose }: { student: StudentProfile; onClose: () => void }) {
   return (
     <div
@@ -162,10 +156,8 @@ function StudentModal({ student, onClose }: { student: StudentProfile; onClose: 
           <X className="size-4" />
         </button>
 
-        {/* Header */}
         <div className="flex items-center gap-4 pr-10">
           {student.profile_photo ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={`${ASSET_BASE_URL}${student.profile_photo}`}
               alt={`${student.first_name} ${student.last_name}`}
@@ -197,7 +189,6 @@ function StudentModal({ student, onClose }: { student: StudentProfile; onClose: 
           </div>
         </div>
 
-        {/* Carrera */}
         {student.career && (
           <div className="mt-4 flex items-start gap-2 rounded-2xl border border-border bg-muted/40 p-3 text-sm">
             <GraduationCap className="mt-0.5 size-4 shrink-0 text-primary" />
@@ -209,7 +200,6 @@ function StudentModal({ student, onClose }: { student: StudentProfile; onClose: 
           </div>
         )}
 
-        {/* Bio */}
         {student.bio && (
           <div className="mt-4">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sobre mí</p>
@@ -217,7 +207,6 @@ function StudentModal({ student, onClose }: { student: StudentProfile; onClose: 
           </div>
         )}
 
-        {/* Contacto */}
         <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/5 p-4">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-primary">Contacto</p>
           <div className="flex flex-col gap-2">
@@ -242,7 +231,6 @@ function StudentModal({ student, onClose }: { student: StudentProfile; onClose: 
           </div>
         </div>
 
-        {/* CV */}
         {student.cv_url && (
           <a
             href={student.cv_url}
@@ -259,7 +247,6 @@ function StudentModal({ student, onClose }: { student: StudentProfile; onClose: 
   );
 }
 
-// ── Main section ──────────────────────────────────────────────────────────────
 export function MainTabsSection({ jobs, students }: Props) {
   const [tab, setTab] = useState<Tab>("todas");
   const [search, setSearch] = useState("");
@@ -280,7 +267,6 @@ export function MainTabsSection({ jobs, students }: Props) {
       {selectedStudent && <StudentModal student={selectedStudent} onClose={() => setSelectedStudent(null)} />}
 
       <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-8">
-        {/* Tres botones */}
         <div className="flex flex-wrap gap-3">
           {(["todas", "estudiante", "empresa"] as Tab[]).map((t) => (
             <button
@@ -300,7 +286,6 @@ export function MainTabsSection({ jobs, students }: Props) {
           ))}
         </div>
 
-        {/* Buscador */}
         {tab !== "empresa" && (
           <div className="relative mt-6">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -314,7 +299,6 @@ export function MainTabsSection({ jobs, students }: Props) {
           </div>
         )}
 
-        {/* Lista de ofertas — tabs "todas" y "estudiante" */}
         {tab !== "empresa" && (
           <div className="mt-6">
             {filteredJobs.length > 0 ? (
@@ -330,7 +314,6 @@ export function MainTabsSection({ jobs, students }: Props) {
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
                           {job.company?.logo_url ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={`${ASSET_BASE_URL}${job.company.logo_url}`}
                               alt={job.company.company_name}
@@ -368,7 +351,6 @@ export function MainTabsSection({ jobs, students }: Props) {
                     >
                       <div className="flex items-center gap-3">
                         {job.company?.logo_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={`${ASSET_BASE_URL}${job.company.logo_url}`}
                             alt={job.company.company_name}
@@ -404,7 +386,6 @@ export function MainTabsSection({ jobs, students }: Props) {
           </div>
         )}
 
-        {/* Directorio de estudiantes — tab "empresa" */}
         {tab === "empresa" && (
           <div className="mt-6">
             {students.length > 0 ? (
@@ -421,7 +402,6 @@ export function MainTabsSection({ jobs, students }: Props) {
                   >
                     <div className="flex items-center gap-3">
                       {s.profile_photo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={`${ASSET_BASE_URL}${s.profile_photo}`}
                           alt={`${s.first_name} ${s.last_name}`}

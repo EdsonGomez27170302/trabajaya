@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/gin-gonic/gin"
+
 	"trabajaya-backend/internal/config"
 	"trabajaya-backend/internal/database"
 	"trabajaya-backend/internal/router"
@@ -10,6 +12,7 @@ import (
 
 func main() {
 	cfg := config.Load()
+	gin.SetMode(cfg.GinMode)
 
 	db, err := database.Connect(cfg)
 	if err != nil {

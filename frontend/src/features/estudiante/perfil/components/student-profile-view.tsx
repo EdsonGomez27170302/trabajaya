@@ -66,7 +66,8 @@ export function StudentProfileView() {
         ? current.filter((t) => t !== turno)
         : [...current, turno];
       if (updated.length === 0) {
-        const { [day]: _, ...rest } = prev;
+        const rest = { ...prev };
+        delete rest[day];
         return rest;
       }
       return { ...prev, [day]: updated };
@@ -123,7 +124,6 @@ export function StudentProfileView() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
 
-        {/* Datos personales */}
         <section className="grid gap-4 rounded-3xl border border-border bg-card p-6 shadow-sm sm:grid-cols-2">
           <p className="sm:col-span-2 text-sm font-semibold uppercase tracking-[0.3em] text-primary">
             Datos personales
@@ -176,7 +176,6 @@ export function StudentProfileView() {
           </div>
         </section>
 
-        {/* Disponibilidad */}
         <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">
             Disponibilidad horaria
@@ -235,7 +234,6 @@ export function StudentProfileView() {
           )}
         </section>
 
-        {/* Visibilidad */}
         <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary mb-4">
             Visibilidad en el directorio
@@ -276,7 +274,6 @@ export function StudentProfileView() {
         </button>
       </form>
 
-      {/* Vista previa de la publicación */}
       {profile && (
         <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary mb-4">
@@ -303,7 +300,6 @@ export function StudentProfileView() {
 
               <div className="relative flex items-center gap-3">
                 {profile.profile_photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={`${ASSET_BASE_URL}${profile.profile_photo}`}
                     alt={`${profile.first_name} ${profile.last_name}`}
@@ -363,7 +359,6 @@ export function StudentProfileView() {
         </section>
       )}
 
-      {/* Destacar perfil */}
       <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
         <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary mb-1">
           Visibilidad premium
@@ -384,7 +379,7 @@ export function StudentProfileView() {
             </p>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2"><Star className="size-4 text-amber-500 shrink-0" /> Apareces en la parte superior del directorio</li>
-              <li className="flex items-center gap-2"><Star className="size-4 text-amber-500 shrink-0" /> Badge dorado "Destacado" visible para empresas</li>
+              <li className="flex items-center gap-2"><Star className="size-4 text-amber-500 shrink-0" /> Badge dorado &quot;Destacado&quot; visible para empresas</li>
               <li className="flex items-center gap-2"><Star className="size-4 text-amber-500 shrink-0" /> Mayor probabilidad de ser contactado</li>
             </ul>
             <button

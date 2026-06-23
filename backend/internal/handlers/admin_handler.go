@@ -23,8 +23,6 @@ type adminUserResponse struct {
 	CompanyProfile *models.CompanyProfile `json:"company_profile,omitempty"`
 }
 
-// ListUsers returns users with an optional role filter, including a summary
-// of their profile.
 func (h *AdminHandler) ListUsers(c *gin.Context) {
 	query := h.DB.Model(&models.User{})
 	if role := c.Query("role"); role != "" {
@@ -58,7 +56,6 @@ func (h *AdminHandler) ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": response})
 }
 
-// ToggleUserActive flips a user's is_active flag (enable/disable account).
 func (h *AdminHandler) ToggleUserActive(c *gin.Context) {
 	var user models.User
 	if err := h.DB.First(&user, c.Param("id")).Error; err != nil {
@@ -75,7 +72,6 @@ func (h *AdminHandler) ToggleUserActive(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// VerifyCompany marks a company profile as verified by the admin team.
 func (h *AdminHandler) VerifyCompany(c *gin.Context) {
 	var profile models.CompanyProfile
 	if err := h.DB.First(&profile, c.Param("id")).Error; err != nil {
@@ -92,8 +88,6 @@ func (h *AdminHandler) VerifyCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, profile)
 }
 
-// ListAllJobs returns every job for moderation, optionally filtered by status
-// and including soft-deleted jobs.
 func (h *AdminHandler) ListAllJobs(c *gin.Context) {
 	query := h.DB.Model(&models.Job{}).Preload("Company")
 
@@ -117,7 +111,6 @@ type moderateJobRequest struct {
 	Status string `json:"status" binding:"required,oneof=active paused closed"`
 }
 
-// ModerateJob lets an admin change a job's status (e.g. close it).
 func (h *AdminHandler) ModerateJob(c *gin.Context) {
 	var req moderateJobRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -140,7 +133,6 @@ func (h *AdminHandler) ModerateJob(c *gin.Context) {
 	c.JSON(http.StatusOK, job)
 }
 
-// DeleteJob soft-deletes any job (admin moderation).
 func (h *AdminHandler) DeleteJob(c *gin.Context) {
 	result := h.DB.Delete(&models.Job{}, c.Param("id"))
 	if result.Error != nil {

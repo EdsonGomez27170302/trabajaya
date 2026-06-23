@@ -14,51 +14,27 @@ API REST en Go (Gin + GORM + PostgreSQL) para la plataforma TrabajaYa Ayacucho.
 
 ## Configuración
 
-1. Copia `.env.example` a `.env` y ajusta los valores (ya viene un `.env` de
-   desarrollo listo para usar con el `docker-compose.yml` de la raíz del repo).
-2. Variables de email: si dejas `SMTP_USER`/`SMTP_PASSWORD` vacíos, el backend
-   no envía correos reales y en su lugar imprime el link de verificación en
-   consola. Para correo real con Gmail:
-   - `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`
-   - `SMTP_USER` = tu correo de Gmail
-   - `SMTP_PASSWORD` = una "contraseña de aplicación" generada en
-     https://myaccount.google.com/apppasswords (no tu contraseña normal)
+Edita el `.env` de la raíz de `backend/` con tus valores. `JWT_SECRET` y
+`DB_PASSWORD` son obligatorios: el servidor no arranca si faltan.
 
-## Levantar todo con Docker (recomendado, sin `psql` local)
+Variables de email: si dejas `SMTP_USER`/`SMTP_PASSWORD` vacíos, el backend
+no envía correos reales y en su lugar imprime el link de verificación en
+consola. Para correo real con Gmail:
+- `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`
+- `SMTP_USER` = tu correo de Gmail
+- `SMTP_PASSWORD` = una "contraseña de aplicación" generada en
+  https://myaccount.google.com/apppasswords (no tu contraseña normal)
 
-Desde la raíz del repo:
+Mercado Pago: completa `MERCADOPAGO_ACCESS_TOKEN` (credencial de producción
+de tu cuenta) y `MERCADOPAGO_WEBHOOK_SECRET` (clave secreta del webhook,
+configurable en el panel de Mercado Pago) para activar la pasarela de pago.
 
-```bash
-docker compose up -d postgres adminer
-```
+## Desarrollo local
 
-Esto levanta PostgreSQL (puerto 5432) y Adminer (http://localhost:8081,
-sistema "PostgreSQL", servidor `postgres`, usuario/clave/BD según `backend/.env`).
-
-1. Abre Adminer, conéctate y pega el contenido de `db/schema.sql` en
-   "Consulta SQL" y ejecútalo.
-2. Pega luego el contenido de `db/seed.sql` y ejecútalo (incluye 6 empresas,
-   8 estudiantes, 1 admin, 20 ofertas, postulaciones y notificaciones de
-   ejemplo - credenciales al inicio del archivo).
-3. Descarga las imágenes de prueba (logos de empresas y fotos de estudiantes):
-
-   ```bash
-   cd backend
-   go run ./cmd/seed-images
-   ```
-
-4. Levanta el backend:
-
-   ```bash
-   docker compose up -d backend
-   # o, en local sin Docker:
-   cd backend && go run ./cmd/api
-   ```
-
-La API queda disponible en `http://localhost:3001/api` y los archivos
-estáticos (logos/fotos) en `http://localhost:3001/uploads/...`.
-
-## Desarrollo local (sin Docker)
+Requiere una instancia de PostgreSQL local (pgAdmin) accesible con las
+credenciales de `.env` (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`,
+`DB_NAME`). Aplica `db/schema.sql` y `db/seed.sql` con `psql` o pgAdmin antes
+de levantar el servidor.
 
 ```bash
 cd backend
@@ -66,10 +42,15 @@ go mod tidy
 go run ./cmd/api
 ```
 
-Necesitas una instancia de PostgreSQL accesible con las credenciales de
-`.env` (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`). Con
-`AUTO_MIGRATE=true` (default), GORM crea/actualiza las tablas automáticamente
-al iniciar.
+Descarga las imágenes de prueba (logos de empresas y fotos de estudiantes):
+
+```bash
+go run ./cmd/seed-images
+```
+
+La API queda disponible en `http://localhost:3001/api` (o el `PORT` que
+definas) y los archivos estáticos (logos/fotos) en
+`http://localhost:3001/uploads/...`.
 
 ## Endpoints principales
 
@@ -92,12 +73,14 @@ Estudiante (`/api/student`, JWT rol `student`):
 - `GET /applications`
 - `POST /jobs/:id/apply`
 - `DELETE /applications/:id`
+- `POST /payment/create-preference`, `GET /payment/confirm`
 
 Empresa (`/api/company`, JWT rol `company`):
 - `GET/PUT /profile`
 - `GET/POST /jobs`, `PUT/DELETE /jobs/:id`
 - `GET /jobs/:id/candidates`
 - `PUT /applications/:id` (cambia estado y notifica al estudiante)
+- `POST /payment/create-preference`, `GET /payment/confirm`
 
 Notificaciones (`/api/notifications`, JWT cualquier rol):
 - `GET ""`, `PUT /:id/read`, `PUT /read-all`
@@ -110,13 +93,15 @@ Admin (`/api/admin`, JWT rol `admin`):
 - `PUT /jobs/:id/moderate`
 - `DELETE /jobs/:id`
 
+Pagos (Mercado Pago):
+- `POST /api/payments/webhook` (notificaciones server-to-server de Mercado Pago)
+
 ## Probar rápidamente
 
 ```bash
 curl http://localhost:3001/api/health
 curl http://localhost:3001/api/stats
 curl http://localhost:3001/api/jobs
-curl http://localhost:3001/api/jobs/featured
 
 curl -X POST http://localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \

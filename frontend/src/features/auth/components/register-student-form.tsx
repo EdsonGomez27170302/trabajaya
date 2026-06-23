@@ -133,28 +133,24 @@ export function RegisterStudentForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-2">
-        {/* Username */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Usuario</label>
           <input {...register("username")} placeholder="tu_usuario" className={field} />
           {errors.username && <p className={err}>{errors.username.message}</p>}
         </div>
 
-        {/* Email */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Correo personal</label>
           <input {...register("email")} type="email" placeholder="correo@ejemplo.com" className={field} />
           {errors.email && <p className={err}>{errors.email.message}</p>}
         </div>
 
-        {/* Institutional email */}
         <div className="flex flex-col gap-1 sm:col-span-2">
           <label className="text-sm font-semibold text-foreground">Correo institucional UNSCH</label>
           <input {...register("institutional_email")} type="email" placeholder="usuario@unsch.edu.pe" className={field} />
           {errors.institutional_email && <p className={err}>{errors.institutional_email.message}</p>}
         </div>
 
-        {/* Password */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Contraseña</label>
           <div className="relative">
@@ -166,7 +162,6 @@ export function RegisterStudentForm() {
           {errors.password && <p className={err}>{errors.password.message}</p>}
         </div>
 
-        {/* Confirm password */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Confirmar contraseña</label>
           <div className="relative">
@@ -178,21 +173,18 @@ export function RegisterStudentForm() {
           {errors.confirm_password && <p className={err}>{errors.confirm_password.message}</p>}
         </div>
 
-        {/* First name */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Nombre(s)</label>
           <input {...register("first_name")} placeholder="Nombre" className={field} />
           {errors.first_name && <p className={err}>{errors.first_name.message}</p>}
         </div>
 
-        {/* Last name */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Apellidos</label>
           <input {...register("last_name")} placeholder="Apellidos" className={field} />
           {errors.last_name && <p className={err}>{errors.last_name.message}</p>}
         </div>
 
-        {/* Faculty */}
         <div className="flex flex-col gap-1 sm:col-span-2">
           <label className="text-sm font-semibold text-foreground">Facultad</label>
           <select {...register("faculty")} className={field}>
@@ -202,28 +194,24 @@ export function RegisterStudentForm() {
           {errors.faculty && <p className={err}>{errors.faculty.message}</p>}
         </div>
 
-        {/* Career */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Carrera</label>
           <input {...register("career")} placeholder="Ej: Administración de Empresas" className={field} />
           {errors.career && <p className={err}>{errors.career.message}</p>}
         </div>
 
-        {/* Semester */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Semestre actual</label>
           <input {...register("semester", { valueAsNumber: true })} type="number" min={1} max={12} placeholder="1 – 12" className={field} />
           {errors.semester && <p className={err}>{errors.semester.message}</p>}
         </div>
 
-        {/* Phone */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Teléfono</label>
           <input {...register("phone")} placeholder="9XXXXXXXX" className={field} />
           {errors.phone && <p className={err}>{errors.phone.message}</p>}
         </div>
 
-        {/* Zone */}
         <div className="flex flex-col gap-1">
           <label className="text-sm font-semibold text-foreground">Zona de residencia</label>
           <select {...register("zone")} className={field}>
@@ -233,7 +221,6 @@ export function RegisterStudentForm() {
           {errors.zone && <p className={err}>{errors.zone.message}</p>}
         </div>
 
-        {/* Server error */}
         {serverError && (
           <div className="sm:col-span-2">
             <p className="rounded-xl bg-red-50 px-4 py-2 text-sm text-red-600">{serverError}</p>

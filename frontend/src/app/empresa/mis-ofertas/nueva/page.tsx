@@ -106,7 +106,6 @@ export default function NuevaOfertaPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-            {/* Título */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="title">Título del puesto</Label>
               <Input
@@ -119,7 +118,6 @@ export default function NuevaOfertaPage() {
               )}
             </div>
 
-            {/* Descripción */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="description">Descripción</Label>
               <Textarea
@@ -133,7 +131,6 @@ export default function NuevaOfertaPage() {
               )}
             </div>
 
-            {/* Requisitos */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="requirements">Requisitos</Label>
               <Textarea
@@ -146,7 +143,6 @@ export default function NuevaOfertaPage() {
               )}
             </div>
 
-            {/* Categoría y Modalidad */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="category">Categoría</Label>
@@ -175,7 +171,6 @@ export default function NuevaOfertaPage() {
               </div>
             </div>
 
-            {/* Zona */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="zone">Zona</Label>
               <Select id="zone" {...register("zone")} defaultValue="">
@@ -189,7 +184,6 @@ export default function NuevaOfertaPage() {
               )}
             </div>
 
-            {/* Salario */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="salary">Salario (S/)</Label>
@@ -219,7 +213,6 @@ export default function NuevaOfertaPage() {
               </div>
             </div>
 
-            {/* Horas semanales y Vacantes */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="hours_per_week">Horas por semana</Label>
@@ -251,7 +244,6 @@ export default function NuevaOfertaPage() {
               </div>
             </div>
 
-            {/* Contacto */}
             <div className="rounded-2xl border border-border bg-muted/40 p-4 flex flex-col gap-4">
               <p className="text-sm font-semibold text-foreground">Información de contacto</p>
 
@@ -293,7 +285,6 @@ export default function NuevaOfertaPage() {
               </div>
             </div>
 
-            {/* Fecha de expiración */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="expires_at">Fecha de expiración</Label>
               <Input
@@ -306,14 +297,12 @@ export default function NuevaOfertaPage() {
               )}
             </div>
 
-            {/* Server error */}
             {serverError && (
               <p className="rounded-xl bg-destructive/10 px-4 py-2 text-sm text-destructive">
                 {serverError}
               </p>
             )}
 
-            {/* Actions */}
             <div className="flex items-center justify-end gap-3 pt-2">
               <Button
                 type="button"

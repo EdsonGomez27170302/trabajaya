@@ -59,7 +59,7 @@ func main() {
 	pw := hash("Estudiante123!")
 
 	for _, s := range students {
-		// Saltar si ya existe
+
 		var count int64
 		db.Model(&models.User{}).Where("username = ?", s.username).Count(&count)
 		if count > 0 {

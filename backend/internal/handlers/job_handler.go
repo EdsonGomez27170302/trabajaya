@@ -17,7 +17,6 @@ func NewJobHandler(h *Handler) *JobHandler {
 	return &JobHandler{Handler: h}
 }
 
-// ListJobs returns paginated, active jobs for the public job board.
 func (h *JobHandler) ListJobs(c *gin.Context) {
 	page, limit, offset := parsePagination(c)
 
@@ -57,7 +56,6 @@ func (h *JobHandler) ListJobs(c *gin.Context) {
 	})
 }
 
-// FeaturedJobs returns active, featured jobs for the public landing page.
 func (h *JobHandler) FeaturedJobs(c *gin.Context) {
 	limit := 3
 	if l := c.Query("limit"); l != "" {
@@ -79,7 +77,6 @@ func (h *JobHandler) FeaturedJobs(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": jobs})
 }
 
-// GetJob returns a single job and increments its view counter.
 func (h *JobHandler) GetJob(c *gin.Context) {
 	id := c.Param("id")
 
@@ -115,7 +112,6 @@ type jobRequest struct {
 	ContactAddress string                    `json:"contact_address"`
 }
 
-// MyJobs returns all jobs (any status) belonging to the authenticated company.
 func (h *JobHandler) MyJobs(c *gin.Context) {
 	company, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -134,7 +130,6 @@ func (h *JobHandler) MyJobs(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": jobs})
 }
 
-// CreateJob creates a new job posting for the authenticated company.
 func (h *JobHandler) CreateJob(c *gin.Context) {
 	company, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -182,7 +177,6 @@ func (h *JobHandler) CreateJob(c *gin.Context) {
 	c.JSON(http.StatusCreated, job)
 }
 
-// UpdateJob updates a job posting owned by the authenticated company.
 func (h *JobHandler) UpdateJob(c *gin.Context) {
 	company, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -233,7 +227,6 @@ func (h *JobHandler) UpdateJob(c *gin.Context) {
 	c.JSON(http.StatusOK, job)
 }
 
-// DeleteJob soft-deletes a job posting owned by the authenticated company.
 func (h *JobHandler) DeleteJob(c *gin.Context) {
 	company, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -254,8 +247,6 @@ func (h *JobHandler) DeleteJob(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "oferta eliminada"})
 }
 
-// JobCandidates returns the applications submitted to a job owned by the
-// authenticated company, including the applicant's student profile.
 func (h *JobHandler) JobCandidates(c *gin.Context) {
 	company, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {

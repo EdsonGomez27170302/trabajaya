@@ -23,7 +23,6 @@ export function StudentHeader({ onMenuToggle }: Props) {
   return (
     <header className="flex items-center justify-between border-b border-border bg-card px-4 py-4 md:px-6">
       <div className="flex items-center gap-3">
-        {/* Hamburger — mobile only */}
         <button
           type="button"
           onClick={onMenuToggle}
@@ -33,7 +32,6 @@ export function StudentHeader({ onMenuToggle }: Props) {
           <Menu className="size-5" />
         </button>
 
-        {/* Back button — desktop only */}
         <button
           type="button"
           onClick={() => router.back()}

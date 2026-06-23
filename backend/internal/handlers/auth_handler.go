@@ -101,7 +101,7 @@ func (h *AuthHandler) RegisterStudent(c *gin.Context) {
 	}
 
 	if err := h.Email.SendVerificationEmail(user.Email, profile.FirstName, verificationToken); err != nil {
-		// Account creation already succeeded; surface the email failure but don't roll back.
+
 		c.JSON(http.StatusCreated, gin.H{
 			"user":    user,
 			"profile": profile,
@@ -212,7 +212,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	var user models.User
 	err := h.DB.Where("username = ? OR email = ?", req.Username, req.Username).First(&user).Error
 	if err != nil {
-		// Intentar por correo institucional del perfil de estudiante
+
 		var profile models.StudentProfile
 		if err2 := h.DB.Where("institutional_email = ?", req.Username).First(&profile).Error; err2 == nil {
 			err = h.DB.First(&user, profile.UserID).Error

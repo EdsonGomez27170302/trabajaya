@@ -28,7 +28,6 @@ export function RouteGuard({ role, children }: Props) {
     }
   }, [token, user, role, router]);
 
-  // Derived directly from store — no setState in effect needed
   if (!token || !user || user.role !== role) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">

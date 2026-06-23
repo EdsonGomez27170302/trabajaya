@@ -18,19 +18,31 @@ export default function PagoExitoEstudiantePage() {
     if (called.current) return;
     called.current = true;
 
-    const paymentId = searchParams.get("payment_id");
-    const status = searchParams.get("status");
+    async function confirm() {
+      const paymentId = searchParams.get("payment_id");
+      const status = searchParams.get("status");
 
-    if (!paymentId || status === "failure") { setState("error"); return; }
-    if (status === "pending") { setState("pending"); return; }
+      if (!paymentId || status === "failure") {
+        setState("error");
+        return;
+      }
+      if (status === "pending") {
+        setState("pending");
+        return;
+      }
 
-    api
-      .get<{ status: string; upgraded: boolean }>(`/student/payment/confirm?payment_id=${paymentId}`)
-      .then(({ data }) => {
+      try {
+        const { data } = await api.get<{ status: string; upgraded: boolean }>(
+          `/student/payment/confirm?payment_id=${paymentId}`
+        );
         if (data.upgraded) setState("success");
         else setState(data.status === "pending" ? "pending" : "error");
-      })
-      .catch(() => setState("error"));
+      } catch {
+        setState("error");
+      }
+    }
+
+    confirm();
   }, [searchParams]);
 
   if (state === "loading") {

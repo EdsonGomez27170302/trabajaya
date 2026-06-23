@@ -1,6 +1,3 @@
-// seed-images downloads placeholder logos and profile photos used by the
-// seed data into backend/uploads/, so the backend can serve them as static
-// files at /uploads/companies/* and /uploads/students/*.
 package main
 
 import (
@@ -28,15 +25,12 @@ func main() {
 		log.Fatalf("failed to create %s: %v", studentsDir, err)
 	}
 
-	// 6 deterministic company logos from picsum.photos (seeded by name so
-	// re-running this program produces the same images).
 	for i := 1; i <= 6; i++ {
 		url := fmt.Sprintf("https://picsum.photos/seed/trabajaya-empresa-%d/400/400", i)
 		dest := filepath.Join(companiesDir, fmt.Sprintf("empresa-%d.jpg", i))
 		download(url, dest)
 	}
 
-	// 8 student profile photos from i.pravatar.cc (seeded by id).
 	for i := 1; i <= 8; i++ {
 		url := fmt.Sprintf("https://i.pravatar.cc/300?img=%d", i)
 		dest := filepath.Join(studentsDir, fmt.Sprintf("estudiante-%d.jpg", i))

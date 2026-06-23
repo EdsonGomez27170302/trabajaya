@@ -12,7 +12,6 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-primary/30 bg-primary">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        {/* Brand */}
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-primary-foreground/70">
             TrabajaYa
@@ -22,7 +21,6 @@ export function Navbar() {
           </h2>
         </div>
 
-        {/* Desktop nav */}
         <div className="hidden items-center gap-3 text-sm md:flex">
           <ThemeToggle />
           <Link
@@ -39,7 +37,6 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile: ThemeToggle + hamburger */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <button
@@ -53,7 +50,6 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile dropdown menu */}
       {mobileMenuOpen && (
         <div className="border-t border-primary-foreground/20 bg-primary px-6 pb-4 md:hidden">
           <div className="flex flex-col gap-3 pt-4 text-sm">

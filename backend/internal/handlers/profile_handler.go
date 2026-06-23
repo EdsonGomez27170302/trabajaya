@@ -17,7 +17,6 @@ func NewProfileHandler(h *Handler) *ProfileHandler {
 	return &ProfileHandler{Handler: h}
 }
 
-// GetStudentProfile returns the authenticated student's profile.
 func (h *ProfileHandler) GetStudentProfile(c *gin.Context) {
 	profile, err := getStudentProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -42,7 +41,6 @@ type studentProfileRequest struct {
 	IsAvailable  *bool                     `json:"is_available"`
 }
 
-// UpdateStudentProfile updates the authenticated student's profile.
 func (h *ProfileHandler) UpdateStudentProfile(c *gin.Context) {
 	profile, err := getStudentProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -81,7 +79,6 @@ func (h *ProfileHandler) UpdateStudentProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, profile)
 }
 
-// ListAvailableStudents returns public profiles of students seeking work.
 func (h *ProfileHandler) ListAvailableStudents(c *gin.Context) {
 	var profiles []models.StudentProfile
 	if err := h.DB.Where("is_available = ?", true).
@@ -93,7 +90,6 @@ func (h *ProfileHandler) ListAvailableStudents(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": profiles})
 }
 
-// GetCompanyProfile returns the authenticated company's profile.
 func (h *ProfileHandler) GetCompanyProfile(c *gin.Context) {
 	profile, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -115,7 +111,6 @@ type companyProfileRequest struct {
 	LogoURL     string `json:"logo_url"`
 }
 
-// UpdateCompanyProfile updates the authenticated company's profile.
 func (h *ProfileHandler) UpdateCompanyProfile(c *gin.Context) {
 	profile, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {

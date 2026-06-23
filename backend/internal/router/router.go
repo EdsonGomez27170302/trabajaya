@@ -39,15 +39,12 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 		})
 		api.GET("/stats", statsHandler.GetStats)
 
-		// Public job board
 		api.GET("/jobs", jobHandler.ListJobs)
 		api.GET("/jobs/featured", jobHandler.FeaturedJobs)
 		api.GET("/jobs/:id", jobHandler.GetJob)
 
-		// Public student directory
 		api.GET("/students", profileHandler.ListAvailableStudents)
 
-		// Auth
 		auth := api.Group("/auth")
 		{
 			auth.POST("/register/student", authHandler.RegisterStudent)
@@ -57,7 +54,6 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			auth.GET("/me", middleware.AuthRequired(cfg.JWTSecret), authHandler.Me)
 		}
 
-		// Student
 		student := api.Group("/student")
 		student.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("student"))
 		{
@@ -70,7 +66,6 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			student.GET("/payment/confirm", paymentHandler.ConfirmStudentPayment)
 		}
 
-		// Company
 		company := api.Group("/company")
 		company.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("company"))
 		{
@@ -86,10 +81,8 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			company.GET("/payment/confirm", paymentHandler.ConfirmPayment)
 		}
 
-		// Mercado Pago webhook (public — MP calls this from their servers)
 		api.POST("/payments/webhook", paymentHandler.Webhook)
 
-		// Notifications (any authenticated role)
 		notifications := api.Group("/notifications")
 		notifications.Use(middleware.AuthRequired(cfg.JWTSecret))
 		{
@@ -98,7 +91,6 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			notifications.PUT("/read-all", notificationHandler.MarkAllAsRead)
 		}
 
-		// Admin
 		admin := api.Group("/admin")
 		admin.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("admin"))
 		{

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AtSign, Building2, GraduationCap, Mail, MapPin, Phone, Star, X } from "lucide-react";
+import { AtSign, Building2, MapPin, Phone, Star, X } from "lucide-react";
 
 import { ASSET_BASE_URL } from "@/lib/config";
 import { formatSalary, formatScheduleSummary } from "@/lib/format";
@@ -32,10 +32,8 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
           <X className="size-4" />
         </button>
 
-        {/* Header */}
         <div className="flex items-center gap-3 pr-10">
           {job.company?.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={`${ASSET_BASE_URL}${job.company.logo_url}`}
               alt={job.company.company_name}
@@ -71,7 +69,6 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
           )}
         </div>
 
-        {/* Detalles */}
         <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-border bg-muted/40 p-4 text-sm">
           <div>
             <p className="text-xs text-muted-foreground">Salario</p>
@@ -105,7 +102,6 @@ function JobModal({ job, onClose }: { job: Job; onClose: () => void }) {
           </div>
         )}
 
-        {/* Contacto */}
         {(job.contact_phone || job.contact_email || job.contact_address) && (
           <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/5 p-4">
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-primary">Contacto</p>
@@ -175,7 +171,6 @@ export function JobsList({ jobs }: { jobs: Job[] }) {
 
             <div className="flex items-center gap-3">
               {job.company?.logo_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={`${ASSET_BASE_URL}${job.company.logo_url}`}
                   alt={job.company.company_name}

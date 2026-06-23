@@ -17,7 +17,6 @@ func NewNotificationHandler(h *Handler) *NotificationHandler {
 	return &NotificationHandler{Handler: h}
 }
 
-// ListNotifications returns the authenticated user's notifications.
 func (h *NotificationHandler) ListNotifications(c *gin.Context) {
 	var notifications []models.Notification
 	if err := h.DB.Where("user_id = ?", currentUserID(c)).
@@ -29,7 +28,6 @@ func (h *NotificationHandler) ListNotifications(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": notifications})
 }
 
-// MarkAsRead marks a single notification as read.
 func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 	result := h.DB.Model(&models.Notification{}).
 		Where("id = ? AND user_id = ?", c.Param("id"), currentUserID(c)).
@@ -45,7 +43,6 @@ func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "notificación marcada como leída"})
 }
 
-// MarkAllAsRead marks all of the authenticated user's notifications as read.
 func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
 	if err := h.DB.Model(&models.Notification{}).
 		Where("user_id = ? AND is_read = ?", currentUserID(c), false).

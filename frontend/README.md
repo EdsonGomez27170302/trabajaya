@@ -18,7 +18,7 @@ Abre [http://localhost:3000](http://localhost:3000).
 
 ## Variables de entorno
 
-Copia `.env.local` (ver `lib/config.ts`) y define:
+Edita `.env` (ver `src/lib/config.ts`) y define:
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001/api

@@ -80,7 +80,6 @@ export function UsersTable() {
         </h1>
       </div>
 
-      {/* Filtros por rol */}
       <div className="flex gap-2">
         {[
           { value: "", label: "Todos" },

@@ -6,8 +6,6 @@ import (
 	"errors"
 )
 
-// JSONStringArrayMap maps to a jsonb column and matches the TypeScript type
-// Record<string, string[]> used for `availability` and `schedule`.
 type JSONStringArrayMap map[string][]string
 
 func (m JSONStringArrayMap) Value() (driver.Value, error) {

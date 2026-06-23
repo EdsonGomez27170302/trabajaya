@@ -2,9 +2,13 @@ package handlers
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -61,7 +65,6 @@ type createPreferenceRequest struct {
 	JobID uint `json:"job_id" binding:"required"`
 }
 
-// CreatePreference creates a Mercado Pago checkout preference to feature a specific job.
 func (h *PaymentHandler) CreatePreference(c *gin.Context) {
 	if h.Cfg.MercadoPagoAccessToken == "" {
 		utils.Error(c, http.StatusServiceUnavailable, "Pasarela de pago no configurada")
@@ -76,7 +79,6 @@ func (h *PaymentHandler) CreatePreference(c *gin.Context) {
 		return
 	}
 
-	// Verify the job belongs to this company
 	cp, err := getCompanyProfileByUserID(h.DB, userID)
 	if err != nil {
 		utils.Error(c, http.StatusNotFound, "Perfil de empresa no encontrado")
@@ -94,7 +96,6 @@ func (h *PaymentHandler) CreatePreference(c *gin.Context) {
 		return
 	}
 
-	// external_reference = "userID:jobID"
 	externalRef := fmt.Sprintf("%d:%d", userID, req.JobID)
 
 	body := mpPreferenceReq{
@@ -116,7 +117,8 @@ func (h *PaymentHandler) CreatePreference(c *gin.Context) {
 
 	pref, err := h.mpPost("/checkout/preferences", body)
 	if err != nil {
-		utils.Error(c, http.StatusBadGateway, "Error al crear preferencia: "+err.Error())
+		log.Printf("mercadopago: error creando preferencia para job %d: %v", req.JobID, err)
+		utils.Error(c, http.StatusBadGateway, "Error al crear la preferencia de pago")
 		return
 	}
 
@@ -126,7 +128,6 @@ func (h *PaymentHandler) CreatePreference(c *gin.Context) {
 	})
 }
 
-// ConfirmPayment verifies a payment and marks the job as featured.
 func (h *PaymentHandler) ConfirmPayment(c *gin.Context) {
 	if h.Cfg.MercadoPagoAccessToken == "" {
 		utils.Error(c, http.StatusServiceUnavailable, "Pasarela de pago no configurada")
@@ -142,7 +143,8 @@ func (h *PaymentHandler) ConfirmPayment(c *gin.Context) {
 
 	payment, err := h.mpGetPayment(paymentID)
 	if err != nil {
-		utils.Error(c, http.StatusBadGateway, "No se pudo verificar el pago: "+err.Error())
+		log.Printf("mercadopago: error verificando pago %s: %v", paymentID, err)
+		utils.Error(c, http.StatusBadGateway, "No se pudo verificar el pago")
 		return
 	}
 
@@ -151,7 +153,6 @@ func (h *PaymentHandler) ConfirmPayment(c *gin.Context) {
 		return
 	}
 
-	// Parse "userID:jobID"
 	parts := strings.SplitN(payment.ExternalReference, ":", 2)
 	if len(parts) != 2 {
 		utils.Error(c, http.StatusBadRequest, "Referencia de pago inválida")
@@ -170,17 +171,27 @@ func (h *PaymentHandler) ConfirmPayment(c *gin.Context) {
 		return
 	}
 
-	if err := h.DB.Model(&models.Job{}).
-		Where("id = ?", uint(jobID)).
-		Update("is_featured", true).Error; err != nil {
+	cp, err := getCompanyProfileByUserID(h.DB, userID)
+	if err != nil {
+		utils.Error(c, http.StatusNotFound, "Perfil de empresa no encontrado")
+		return
+	}
+
+	result := h.DB.Model(&models.Job{}).
+		Where("id = ? AND company_id = ?", uint(jobID), cp.ID).
+		Update("is_featured", true)
+	if result.Error != nil {
 		utils.Error(c, http.StatusInternalServerError, "No se pudo destacar la oferta")
+		return
+	}
+	if result.RowsAffected == 0 {
+		utils.Error(c, http.StatusForbidden, "La oferta no corresponde a tu empresa")
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "approved", "upgraded": true, "job_id": jobID})
 }
 
-// CreateStudentPreference creates a Mercado Pago preference to feature a student profile.
 func (h *PaymentHandler) CreateStudentPreference(c *gin.Context) {
 	if h.Cfg.MercadoPagoAccessToken == "" {
 		utils.Error(c, http.StatusServiceUnavailable, "Pasarela de pago no configurada")
@@ -219,14 +230,14 @@ func (h *PaymentHandler) CreateStudentPreference(c *gin.Context) {
 
 	pref, err := h.mpPost("/checkout/preferences", body)
 	if err != nil {
-		utils.Error(c, http.StatusBadGateway, "Error al crear preferencia: "+err.Error())
+		log.Printf("mercadopago: error creando preferencia para estudiante %d: %v", userID, err)
+		utils.Error(c, http.StatusBadGateway, "Error al crear la preferencia de pago")
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"init_point": pref.InitPoint, "preference_id": pref.ID})
 }
 
-// ConfirmStudentPayment verifies a payment and marks the student profile as featured.
 func (h *PaymentHandler) ConfirmStudentPayment(c *gin.Context) {
 	if h.Cfg.MercadoPagoAccessToken == "" {
 		utils.Error(c, http.StatusServiceUnavailable, "Pasarela de pago no configurada")
@@ -242,7 +253,8 @@ func (h *PaymentHandler) ConfirmStudentPayment(c *gin.Context) {
 
 	payment, err := h.mpGetPayment(paymentID)
 	if err != nil {
-		utils.Error(c, http.StatusBadGateway, "No se pudo verificar el pago: "+err.Error())
+		log.Printf("mercadopago: error verificando pago %s: %v", paymentID, err)
+		utils.Error(c, http.StatusBadGateway, "No se pudo verificar el pago")
 		return
 	}
 
@@ -251,7 +263,6 @@ func (h *PaymentHandler) ConfirmStudentPayment(c *gin.Context) {
 		return
 	}
 
-	// Validate "student:userID"
 	parts := strings.SplitN(payment.ExternalReference, ":", 2)
 	if len(parts) != 2 || parts[0] != "student" {
 		utils.Error(c, http.StatusBadRequest, "Referencia de pago inválida")
@@ -273,8 +284,12 @@ func (h *PaymentHandler) ConfirmStudentPayment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "approved", "upgraded": true})
 }
 
-// Webhook handles Mercado Pago server-to-server notifications (for production deployments).
 func (h *PaymentHandler) Webhook(c *gin.Context) {
+	if !h.verifyWebhookSignature(c) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "firma inválida"})
+		return
+	}
+
 	var body struct {
 		Type string `json:"type"`
 		Data struct {
@@ -294,12 +309,54 @@ func (h *PaymentHandler) Webhook(c *gin.Context) {
 
 	parts := strings.SplitN(payment.ExternalReference, ":", 2)
 	if len(parts) == 2 {
-		if jobID, err := strconv.ParseUint(parts[1], 10, 64); err == nil {
+		if parts[0] == "student" {
+			if studentUserID, err := strconv.ParseUint(parts[1], 10, 64); err == nil {
+				_ = h.DB.Model(&models.StudentProfile{}).Where("user_id = ?", uint(studentUserID)).Update("is_featured", true)
+			}
+		} else if jobID, err := strconv.ParseUint(parts[1], 10, 64); err == nil {
 			_ = h.DB.Model(&models.Job{}).Where("id = ?", uint(jobID)).Update("is_featured", true)
 		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"received": true})
+}
+
+func (h *PaymentHandler) verifyWebhookSignature(c *gin.Context) bool {
+	if h.Cfg.MercadoPagoWebhookSecret == "" {
+		return true
+	}
+
+	sigHeader := c.GetHeader("x-signature")
+	requestID := c.GetHeader("x-request-id")
+	dataID := c.Query("data.id")
+	if sigHeader == "" || requestID == "" || dataID == "" {
+		return false
+	}
+	dataID = strings.ToLower(dataID)
+
+	var ts, v1 string
+	for _, part := range strings.Split(sigHeader, ",") {
+		kv := strings.SplitN(strings.TrimSpace(part), "=", 2)
+		if len(kv) != 2 {
+			continue
+		}
+		switch kv[0] {
+		case "ts":
+			ts = kv[1]
+		case "v1":
+			v1 = kv[1]
+		}
+	}
+	if ts == "" || v1 == "" {
+		return false
+	}
+
+	manifest := fmt.Sprintf("id:%s;request-id:%s;ts:%s;", dataID, requestID, ts)
+	mac := hmac.New(sha256.New, []byte(h.Cfg.MercadoPagoWebhookSecret))
+	mac.Write([]byte(manifest))
+	expected := hex.EncodeToString(mac.Sum(nil))
+
+	return hmac.Equal([]byte(expected), []byte(v1))
 }
 
 func (h *PaymentHandler) mpPost(path string, payload any) (*mpPreferenceResp, error) {

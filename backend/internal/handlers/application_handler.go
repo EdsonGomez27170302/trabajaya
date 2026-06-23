@@ -23,7 +23,6 @@ type applyRequest struct {
 	CoverLetter string `json:"cover_letter"`
 }
 
-// Apply lets the authenticated student apply to a job.
 func (h *ApplicationHandler) Apply(c *gin.Context) {
 	student, err := getStudentProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -59,7 +58,6 @@ func (h *ApplicationHandler) Apply(c *gin.Context) {
 	c.JSON(http.StatusCreated, application)
 }
 
-// MyApplications returns the applications submitted by the authenticated student.
 func (h *ApplicationHandler) MyApplications(c *gin.Context) {
 	student, err := getStudentProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -79,7 +77,6 @@ func (h *ApplicationHandler) MyApplications(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": applications})
 }
 
-// WithdrawApplication lets the authenticated student withdraw an application.
 func (h *ApplicationHandler) WithdrawApplication(c *gin.Context) {
 	student, err := getStudentProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {
@@ -104,8 +101,6 @@ type updateApplicationStatusRequest struct {
 	Status string `json:"status" binding:"required,oneof=pending viewed accepted rejected"`
 }
 
-// UpdateApplicationStatus lets the authenticated company update an
-// applicant's status and notifies the student of the change.
 func (h *ApplicationHandler) UpdateApplicationStatus(c *gin.Context) {
 	company, err := getCompanyProfileByUserID(h.DB, currentUserID(c))
 	if err != nil {

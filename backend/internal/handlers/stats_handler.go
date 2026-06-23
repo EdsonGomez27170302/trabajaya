@@ -16,7 +16,6 @@ func NewStatsHandler(h *Handler) *StatsHandler {
 	return &StatsHandler{Handler: h}
 }
 
-// GetStats returns aggregate platform numbers used by the public landing page.
 func (h *StatsHandler) GetStats(c *gin.Context) {
 	var activeJobs int64
 	h.DB.Model(&models.Job{}).Where("status = ?", "active").Count(&activeJobs)
