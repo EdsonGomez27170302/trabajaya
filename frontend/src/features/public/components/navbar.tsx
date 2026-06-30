@@ -5,6 +5,7 @@ import Link from "next/link";
 import { X, Menu } from "lucide-react";
 
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { NavbarMobileMenu } from "./navbar-mobile-menu";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,20 +14,13 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-primary/30 bg-primary">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-primary-foreground/70">
-            TrabajaYa
-          </p>
-          <h2 className="text-xl font-semibold text-primary-foreground">
-            Ayacucho para estudiantes UNSCH
-          </h2>
+          <p className="text-xs uppercase tracking-[0.35em] text-primary-foreground/70">TrabajaYa</p>
+          <h2 className="text-lg font-semibold text-primary-foreground sm:text-xl">Ayacucho para estudiantes UNSCH</h2>
         </div>
 
         <div className="hidden items-center gap-3 text-sm md:flex">
           <ThemeToggle />
-          <Link
-            href="/auth/login"
-            className="font-semibold text-primary-foreground/90 transition hover:text-primary-foreground"
-          >
+          <Link href="/auth/login" className="font-semibold text-primary-foreground/90 transition hover:text-primary-foreground">
             Iniciar sesión
           </Link>
           <Link
@@ -50,26 +44,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      {mobileMenuOpen && (
-        <div className="border-t border-primary-foreground/20 bg-primary px-6 pb-4 md:hidden">
-          <div className="flex flex-col gap-3 pt-4 text-sm">
-            <Link
-              href="/auth/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="font-semibold text-primary-foreground/90 transition hover:text-primary-foreground"
-            >
-              Iniciar sesión
-            </Link>
-            <Link
-              href="/auth/register/estudiante"
-              onClick={() => setMobileMenuOpen(false)}
-              className="inline-flex w-fit rounded-full bg-primary-foreground px-4 py-2 font-semibold text-primary transition hover:bg-primary-foreground/90"
-            >
-              Crear cuenta
-            </Link>
-          </div>
-        </div>
-      )}
+      {mobileMenuOpen && <NavbarMobileMenu onClose={() => setMobileMenuOpen(false)} />}
     </header>
   );
 }

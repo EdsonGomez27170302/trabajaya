@@ -18,15 +18,7 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 
 	emailService := services.NewEmailService(cfg)
 	h := handlers.NewHandler(db, cfg, emailService)
-
-	authHandler := handlers.NewAuthHandler(h)
-	jobHandler := handlers.NewJobHandler(h)
-	applicationHandler := handlers.NewApplicationHandler(h)
-	profileHandler := handlers.NewProfileHandler(h)
-	notificationHandler := handlers.NewNotificationHandler(h)
-	adminHandler := handlers.NewAdminHandler(h)
-	statsHandler := handlers.NewStatsHandler(h)
-	paymentHandler := handlers.NewPaymentHandler(h)
+	hs := newHandlerSet(h)
 
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
@@ -37,70 +29,22 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 		api.GET("/health", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"status": "ok"})
 		})
-		api.GET("/stats", statsHandler.GetStats)
+		api.GET("/stats", hs.statsHandler.GetStats)
 
-		api.GET("/jobs", jobHandler.ListJobs)
-		api.GET("/jobs/featured", jobHandler.FeaturedJobs)
-		api.GET("/jobs/:id", jobHandler.GetJob)
+		api.GET("/jobs", hs.jobHandler.ListJobs)
+		api.GET("/jobs/featured", hs.jobHandler.FeaturedJobs)
+		api.GET("/jobs/:id", hs.jobHandler.GetJob)
 
-		api.GET("/students", profileHandler.ListAvailableStudents)
+		api.GET("/students", hs.profileHandler.ListAvailableStudents)
 
-		auth := api.Group("/auth")
-		{
-			auth.POST("/register/student", authHandler.RegisterStudent)
-			auth.POST("/register/company", authHandler.RegisterCompany)
-			auth.POST("/login", authHandler.Login)
-			auth.GET("/verify-email", authHandler.VerifyEmail)
-			auth.GET("/me", middleware.AuthRequired(cfg.JWTSecret), authHandler.Me)
-		}
+		registerAuthRoutes(api, cfg, hs)
+		registerStudentRoutes(api, cfg, hs)
+		registerCompanyRoutes(api, cfg, hs)
 
-		student := api.Group("/student")
-		student.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("student"))
-		{
-			student.GET("/profile", profileHandler.GetStudentProfile)
-			student.PUT("/profile", profileHandler.UpdateStudentProfile)
-			student.GET("/applications", applicationHandler.MyApplications)
-			student.POST("/jobs/:id/apply", applicationHandler.Apply)
-			student.DELETE("/applications/:id", applicationHandler.WithdrawApplication)
-			student.POST("/payment/create-preference", paymentHandler.CreateStudentPreference)
-			student.GET("/payment/confirm", paymentHandler.ConfirmStudentPayment)
-		}
+		api.POST("/payments/webhook", hs.paymentHandler.Webhook)
 
-		company := api.Group("/company")
-		company.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("company"))
-		{
-			company.GET("/profile", profileHandler.GetCompanyProfile)
-			company.PUT("/profile", profileHandler.UpdateCompanyProfile)
-			company.GET("/jobs", jobHandler.MyJobs)
-			company.POST("/jobs", jobHandler.CreateJob)
-			company.PUT("/jobs/:id", jobHandler.UpdateJob)
-			company.DELETE("/jobs/:id", jobHandler.DeleteJob)
-			company.GET("/jobs/:id/candidates", jobHandler.JobCandidates)
-			company.PUT("/applications/:id", applicationHandler.UpdateApplicationStatus)
-			company.POST("/payment/create-preference", paymentHandler.CreatePreference)
-			company.GET("/payment/confirm", paymentHandler.ConfirmPayment)
-		}
-
-		api.POST("/payments/webhook", paymentHandler.Webhook)
-
-		notifications := api.Group("/notifications")
-		notifications.Use(middleware.AuthRequired(cfg.JWTSecret))
-		{
-			notifications.GET("", notificationHandler.ListNotifications)
-			notifications.PUT("/:id/read", notificationHandler.MarkAsRead)
-			notifications.PUT("/read-all", notificationHandler.MarkAllAsRead)
-		}
-
-		admin := api.Group("/admin")
-		admin.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("admin"))
-		{
-			admin.GET("/users", adminHandler.ListUsers)
-			admin.PUT("/users/:id/toggle-active", adminHandler.ToggleUserActive)
-			admin.PUT("/companies/:id/verify", adminHandler.VerifyCompany)
-			admin.GET("/jobs", adminHandler.ListAllJobs)
-			admin.PUT("/jobs/:id/moderate", adminHandler.ModerateJob)
-			admin.DELETE("/jobs/:id", adminHandler.DeleteJob)
-		}
+		registerNotificationRoutes(api, cfg, hs)
+		registerAdminRoutes(api, cfg, hs)
 	}
 
 	return r
