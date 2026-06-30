@@ -39,20 +39,18 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := utils.GenerateToken(h.Cfg.JWTSecret, h.Cfg.JWTExpiresHours, user.ID, user.Role)
-	if err != nil {
-		utils.Error(c, http.StatusInternalServerError, "no se pudo generar el token")
-		return
-	}
-
 	profile, err := h.loadProfile(user)
 	if err != nil {
 		utils.Error(c, http.StatusInternalServerError, "no se pudo cargar el perfil")
 		return
 	}
 
+	if err := h.createSession(c, user.ID, user.Role); err != nil {
+		utils.Error(c, http.StatusInternalServerError, "no se pudo iniciar sesión")
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"token":   token,
 		"user":    user,
 		"profile": profile,
 	})

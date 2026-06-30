@@ -37,14 +37,14 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 
 		api.GET("/students", hs.profileHandler.ListAvailableStudents)
 
-		registerAuthRoutes(api, cfg, hs)
-		registerStudentRoutes(api, cfg, hs)
-		registerCompanyRoutes(api, cfg, hs)
+		registerAuthRoutes(api, db, cfg, hs)
+		registerStudentRoutes(api, db, cfg, hs)
+		registerCompanyRoutes(api, db, cfg, hs)
 
 		api.POST("/payments/webhook", hs.paymentHandler.Webhook)
 
-		registerNotificationRoutes(api, cfg, hs)
-		registerAdminRoutes(api, cfg, hs)
+		registerNotificationRoutes(api, db, cfg, hs)
+		registerAdminRoutes(api, db, cfg, hs)
 	}
 
 	return r

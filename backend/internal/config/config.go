@@ -10,8 +10,9 @@ type Config struct {
 	DBSSLMode   string
 	AutoMigrate bool
 
-	JWTSecret       string
-	JWTExpiresHours int
+	SessionCookieName   string
+	SessionCookieSecure bool
+	SessionExpiresHours int
 
 	SMTPHost     string
 	SMTPPort     string

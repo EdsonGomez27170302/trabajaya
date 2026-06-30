@@ -3,13 +3,19 @@
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth-store";
 
 export function SidebarFooter({ title, subtitle }: { title: string; subtitle?: string }) {
   const router = useRouter();
   const logout = useAuthStore((s) => s.logout);
 
-  function handleLogout() {
+  async function handleLogout() {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // session may already be expired/invalid server-side; clear locally anyway
+    }
     logout();
     router.replace("/auth/login");
   }

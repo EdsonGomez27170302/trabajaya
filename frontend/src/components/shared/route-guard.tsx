@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth-store";
+import type { LoginResponse } from "@/types";
 
 const ROLE_HOME: Record<string, string> = {
   student: "/estudiante/dashboard",
@@ -16,19 +18,37 @@ interface Props {
   children: React.ReactNode;
 }
 
+// Validates the httpOnly session cookie against the backend on every mount:
+// the cookie itself isn't readable from JS, so presence of cached user data
+// alone can't prove the session is still valid (it may have expired or been
+// revoked elsewhere).
 export function RouteGuard({ role, children }: Props) {
   const router = useRouter();
-  const { token, user } = useAuthStore();
+  const { user, setAuth, logout } = useAuthStore();
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    if (!token || !user) {
+    let active = true;
+    api
+      .get<LoginResponse>("/auth/me")
+      .then(({ data }) => active && setAuth(data.user, data.profile))
+      .catch(() => active && logout())
+      .finally(() => active && setChecked(true));
+    return () => {
+      active = false;
+    };
+  }, [setAuth, logout]);
+
+  useEffect(() => {
+    if (!checked) return;
+    if (!user) {
       router.replace("/auth/login");
     } else if (user.role !== role) {
       router.replace(ROLE_HOME[user.role] ?? "/auth/login");
     }
-  }, [token, user, role, router]);
+  }, [checked, user, role, router]);
 
-  if (!token || !user || user.role !== role) {
+  if (!checked || !user || user.role !== role) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <p className="text-sm text-muted-foreground">Cargando…</p>

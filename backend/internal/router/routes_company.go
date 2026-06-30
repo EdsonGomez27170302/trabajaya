@@ -2,14 +2,15 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 
 	"trabajaya-backend/internal/config"
 	"trabajaya-backend/internal/middleware"
 )
 
-func registerCompanyRoutes(api *gin.RouterGroup, cfg *config.Config, hs *handlerSet) {
+func registerCompanyRoutes(api *gin.RouterGroup, db *gorm.DB, cfg *config.Config, hs *handlerSet) {
 	company := api.Group("/company")
-	company.Use(middleware.AuthRequired(cfg.JWTSecret), middleware.RequireRole("company"))
+	company.Use(middleware.AuthRequired(db, cfg.SessionCookieName), middleware.RequireRole("company"))
 	{
 		company.GET("/profile", hs.profileHandler.GetCompanyProfile)
 		company.PUT("/profile", hs.profileHandler.UpdateCompanyProfile)

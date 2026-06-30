@@ -35,7 +35,7 @@ export function useLoginForm() {
     setServerError("");
     try {
       const { data: res } = await api.post<LoginResponse>("/auth/login", data);
-      setAuth(res.token, res.user, res.profile);
+      setAuth(res.user, res.profile);
       router.push(ROLE_HOME[res.user.role] ?? "/");
     } catch (err: unknown) {
       const msg =

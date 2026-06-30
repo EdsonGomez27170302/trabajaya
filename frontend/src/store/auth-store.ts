@@ -5,15 +5,13 @@ import { persist } from "zustand/middleware";
 
 import type { CompanyProfile, StudentProfile, User } from "@/types";
 
+// The session secret lives in an httpOnly cookie the browser manages; this
+// store only caches non-sensitive display data so the UI can render
+// instantly, and is always reconciled against /auth/me by RouteGuard.
 interface AuthState {
-  token: string | null;
   user: User | null;
   profile: StudentProfile | CompanyProfile | null;
-  setAuth: (
-    token: string,
-    user: User,
-    profile: StudentProfile | CompanyProfile | null,
-  ) => void;
+  setAuth: (user: User, profile: StudentProfile | CompanyProfile | null) => void;
   updateProfile: (profile: StudentProfile | CompanyProfile) => void;
   logout: () => void;
 }
@@ -21,12 +19,11 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: null,
       user: null,
       profile: null,
-      setAuth: (token, user, profile) => set({ token, user, profile }),
+      setAuth: (user, profile) => set({ user, profile }),
       updateProfile: (profile) => set({ profile }),
-      logout: () => set({ token: null, user: null, profile: null }),
+      logout: () => set({ user: null, profile: null }),
     }),
     { name: "trabajaya-auth" },
   ),

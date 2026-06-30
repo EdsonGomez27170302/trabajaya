@@ -9,14 +9,11 @@ import (
 func Load() *Config {
 	_ = godotenv.Load()
 
-	jwtSecret := getEnv("JWT_SECRET", "")
-	if jwtSecret == "" {
-		log.Fatal("JWT_SECRET no está definido en el entorno (obligatorio, sin valor por defecto)")
-	}
 	dbPassword := getEnv("DB_PASSWORD", "")
 	if dbPassword == "" {
 		log.Fatal("DB_PASSWORD no está definido en el entorno (obligatorio, sin valor por defecto)")
 	}
+	ginMode := getEnv("GIN_MODE", "release")
 
 	return &Config{
 		Port:        getEnv("PORT", "3002"),
@@ -28,8 +25,9 @@ func Load() *Config {
 		DBSSLMode:   getEnv("DB_SSLMODE", "disable"),
 		AutoMigrate: getEnvBool("AUTO_MIGRATE", true),
 
-		JWTSecret:       jwtSecret,
-		JWTExpiresHours: getEnvInt("JWT_EXPIRES_HOURS", 72),
+		SessionCookieName:   getEnv("SESSION_COOKIE_NAME", "trabajaya_session"),
+		SessionCookieSecure: getEnvBool("SESSION_COOKIE_SECURE", ginMode == "release"),
+		SessionExpiresHours: getEnvInt("SESSION_EXPIRES_HOURS", 72),
 
 		SMTPHost:     getEnv("SMTP_HOST", ""),
 		SMTPPort:     getEnv("SMTP_PORT", "587"),
@@ -46,6 +44,6 @@ func Load() *Config {
 		MercadoPagoWebhookSecret: getEnv("MERCADOPAGO_WEBHOOK_SECRET", ""),
 		MercadoPagoPremiumPrice:  getEnvFloat("MERCADOPAGO_PREMIUM_PRICE", 29.90),
 
-		GinMode: getEnv("GIN_MODE", "release"),
+		GinMode: ginMode,
 	}
 }

@@ -34,6 +34,7 @@ func Connect(cfg *config.Config) (*gorm.DB, error) {
 			&models.Job{},
 			&models.Application{},
 			&models.Notification{},
+			&models.Session{},
 		); err != nil {
 			return nil, err
 		}
