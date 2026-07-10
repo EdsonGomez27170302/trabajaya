@@ -18,5 +18,6 @@ func registerStudentRoutes(api *gin.RouterGroup, db *gorm.DB, cfg *config.Config
 		student.POST("/jobs/:id/apply", hs.applicationHandler.Apply)
 		student.DELETE("/applications/:id", hs.applicationHandler.WithdrawApplication)
 		student.POST("/payment/process", hs.paymentHandler.ProcessStudentPayment)
+		student.GET("/payment/confirm", hs.paymentHandler.ConfirmStudentPayment)
 	}
 }

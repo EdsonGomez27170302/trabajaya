@@ -21,5 +21,7 @@ func registerCompanyRoutes(api *gin.RouterGroup, db *gorm.DB, cfg *config.Config
 		company.GET("/jobs/:id/candidates", hs.jobHandler.JobCandidates)
 		company.PUT("/applications/:id", hs.applicationHandler.UpdateApplicationStatus)
 		company.POST("/payment/process", hs.paymentHandler.ProcessCompanyPayment)
+		company.POST("/payment/create-preference", hs.paymentHandler.CreatePreference)
+		company.GET("/payment/confirm", hs.paymentHandler.ConfirmPayment)
 	}
 }

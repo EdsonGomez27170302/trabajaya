@@ -14,6 +14,7 @@ import (
 
 func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 	r := gin.Default()
+	_ = r.SetTrustedProxies(nil)
 	r.Use(middleware.CORS(cfg.CORSOrigin))
 
 	emailService := services.NewEmailService(cfg)
