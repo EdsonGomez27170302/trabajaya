@@ -1,4 +1,3 @@
-// El SDK puede enviar el payload directo o anidado en formData
 export type MPPayload = {
   token: string;
   payment_method_id: string;

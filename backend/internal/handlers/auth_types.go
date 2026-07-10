@@ -44,9 +44,6 @@ func isUniqueViolation(err error) bool {
 	return strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "unique constraint")
 }
 
-// respondRegistered sends the standard 201 response for a successful
-// registration, attaching a warning field when the verification email could
-// not be sent.
 func respondRegistered(c *gin.Context, user, profile interface{}, emailErr error) {
 	if emailErr != nil {
 		c.JSON(http.StatusCreated, gin.H{

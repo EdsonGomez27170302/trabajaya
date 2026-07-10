@@ -11,8 +11,6 @@ import (
 	"trabajaya-backend/internal/utils"
 )
 
-// buildUserForRegistration creates a models.User with a hashed password and a
-// fresh 48h verification token, writing the HTTP error on failure.
 func buildUserForRegistration(c *gin.Context, username, email, password, role string) (*models.User, string, bool) {
 	passwordHash, err := utils.HashPassword(password)
 	if err != nil {
@@ -38,8 +36,6 @@ func buildUserForRegistration(c *gin.Context, username, email, password, role st
 	return user, verificationToken, true
 }
 
-// runRegistrationTransaction inserts the user and profile in a single DB
-// transaction. It writes the HTTP error on failure and returns false.
 func runRegistrationTransaction(c *gin.Context, db *gorm.DB, user *models.User, setProfileUserID func()) bool {
 	err := db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(user).Error; err != nil {

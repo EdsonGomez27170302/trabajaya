@@ -2,7 +2,6 @@ package handlers
 
 import "trabajaya-backend/internal/models"
 
-// jobFromRequest builds a new models.Job from a create request.
 func jobFromRequest(req jobRequest, companyID uint, isPremium bool) models.Job {
 	j := models.Job{
 		CompanyID:      companyID,
@@ -31,8 +30,6 @@ func jobFromRequest(req jobRequest, companyID uint, isPremium bool) models.Job {
 	return j
 }
 
-// applyJobRequest copies all mutable fields from a jobRequest onto an
-// existing models.Job (used for updates).
 func applyJobRequest(job *models.Job, req jobRequest, isPremium bool) {
 	job.Title = req.Title
 	job.Description = req.Description

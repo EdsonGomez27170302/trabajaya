@@ -8,8 +8,6 @@ import (
 	"trabajaya-backend/internal/models"
 )
 
-// seedStudent creates the user + student profile for one seed entry, skipping
-// it if a user with the same username already exists.
 func seedStudent(db *gorm.DB, s studentSeed, passwordHash string) {
 	var count int64
 	db.Model(&models.User{}).Where("username = ?", s.username).Count(&count)

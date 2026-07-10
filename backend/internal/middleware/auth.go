@@ -16,9 +16,6 @@ const (
 	ContextRoleKey   = "role"
 )
 
-// AuthRequired validates the opaque session cookie against the sessions
-// table. The cookie itself never reveals anything: only its SHA-256 hash is
-// looked up, so a leaked database backup can't be replayed as a session.
 func AuthRequired(db *gorm.DB, cookieName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		raw, err := c.Cookie(cookieName)

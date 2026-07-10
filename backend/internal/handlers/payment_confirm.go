@@ -12,9 +12,6 @@ import (
 	"trabajaya-backend/internal/utils"
 )
 
-// fetchApprovedPayment looks up payment_id from the query string and returns
-// the MercadoPago payment if approved. It writes the HTTP response itself in
-// every case where the caller should stop processing (ok == false).
 func (h *PaymentHandler) fetchApprovedPayment(c *gin.Context) (pmt *payment.Response, ok bool) {
 	paymentID, err := strconv.Atoi(c.Query("payment_id"))
 	if err != nil {

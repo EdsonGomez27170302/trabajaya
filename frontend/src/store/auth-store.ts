@@ -5,9 +5,6 @@ import { persist } from "zustand/middleware";
 
 import type { CompanyProfile, StudentProfile, User } from "@/types";
 
-// The session secret lives in an httpOnly cookie the browser manages; this
-// store only caches non-sensitive display data so the UI can render
-// instantly, and is always reconciled against /auth/me by RouteGuard.
 interface AuthState {
   user: User | null;
   profile: StudentProfile | CompanyProfile | null;

@@ -10,8 +10,6 @@ import (
 	"trabajaya-backend/internal/utils"
 )
 
-// createSession issues a new opaque session token for userID/role, stores
-// its hash, and sets it as an httpOnly cookie on the response.
 func (h *Handler) createSession(c *gin.Context, userID uint, role string) error {
 	raw, err := utils.GenerateRandomToken()
 	if err != nil {
@@ -33,8 +31,6 @@ func (h *Handler) createSession(c *gin.Context, userID uint, role string) error 
 	return nil
 }
 
-// destroySession deletes the session matching the request's cookie (if any)
-// and clears the cookie. It never errors on a missing/invalid cookie.
 func (h *Handler) destroySession(c *gin.Context) {
 	if raw, err := c.Cookie(h.Cfg.SessionCookieName); err == nil && raw != "" {
 		h.DB.Where("token_hash = ?", utils.HashSessionToken(raw)).Delete(&models.Session{})

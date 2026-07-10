@@ -18,10 +18,6 @@ interface Props {
   children: React.ReactNode;
 }
 
-// Validates the httpOnly session cookie against the backend on every mount:
-// the cookie itself isn't readable from JS, so presence of cached user data
-// alone can't prove the session is still valid (it may have expired or been
-// revoked elsewhere).
 export function RouteGuard({ role, children }: Props) {
   const router = useRouter();
   const { user, setAuth, logout } = useAuthStore();

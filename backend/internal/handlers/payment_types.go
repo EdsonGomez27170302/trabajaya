@@ -15,8 +15,6 @@ type createPreferenceRequest struct {
 	JobID uint `json:"job_id" binding:"required"`
 }
 
-// paymentResultJSON builds the standard JSON body returned by the
-// payment-processing endpoints after creating a payment via the SDK.
 func paymentResultJSON(pmt *payment.Response, upgraded bool) gin.H {
 	return gin.H{
 		"status":        pmt.Status,
@@ -26,8 +24,6 @@ func paymentResultJSON(pmt *payment.Response, upgraded bool) gin.H {
 	}
 }
 
-// requireMercadoPago writes the standard "not configured" error response and
-// returns false when the MercadoPago integration has no access token set.
 func (h *PaymentHandler) requireMercadoPago(c *gin.Context) bool {
 	if h.Cfg.MercadoPagoAccessToken == "" {
 		utils.Error(c, http.StatusServiceUnavailable, "Pasarela de pago no configurada")

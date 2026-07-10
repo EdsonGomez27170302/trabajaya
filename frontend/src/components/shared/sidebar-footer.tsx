@@ -13,9 +13,7 @@ export function SidebarFooter({ title, subtitle }: { title: string; subtitle?: s
   async function handleLogout() {
     try {
       await api.post("/auth/logout");
-    } catch {
-      // session may already be expired/invalid server-side; clear locally anyway
-    }
+    } catch {}
     logout();
     router.replace("/auth/login");
   }

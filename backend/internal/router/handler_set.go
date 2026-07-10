@@ -2,8 +2,6 @@ package router
 
 import "trabajaya-backend/internal/handlers"
 
-// handlerSet bundles every handler instance used to wire up routes, so route
-// registration functions don't need a long parameter list each.
 type handlerSet struct {
 	authHandler         *handlers.AuthHandler
 	jobHandler          *handlers.JobHandler

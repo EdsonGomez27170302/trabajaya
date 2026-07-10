@@ -8,7 +8,6 @@ export type PaymentProcessResult = {
 };
 
 export function extractMercadoPagoPayload(param: CardPaymentSubmit): MPPayload {
-  // El SDK envía el payload directo o anidado en { formData }
   return "formData" in param && param.formData ? param.formData : (param as MPPayload);
 }
 
