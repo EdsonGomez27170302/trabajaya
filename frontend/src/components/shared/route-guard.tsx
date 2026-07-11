@@ -37,11 +37,9 @@ export function RouteGuard({ role, children }: Props) {
 
   useEffect(() => {
     if (!checked) return;
-    if (!user) {
-      router.replace("/auth/login");
-    } else if (user.role !== role) {
+    if (!user) router.replace("/auth/login");
+    else if (user.role !== role)
       router.replace(ROLE_HOME[user.role] ?? "/auth/login");
-    }
   }, [checked, user, role, router]);
 
   if (!checked || !user || user.role !== role) {
