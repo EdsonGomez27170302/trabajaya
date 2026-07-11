@@ -3,6 +3,8 @@ package database
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -40,5 +42,34 @@ func Connect(cfg *config.Config) (*gorm.DB, error) {
 		}
 	}
 
+	if os.Getenv("AUTO_RUN_SQL") == "true" {
+		log.Println("running SQL migrations...")
+		if err := runSQLMigrations(db); err != nil {
+			return nil, fmt.Errorf("failed to run SQL migrations: %w", err)
+		}
+	}
+
 	return db, nil
+}
+
+func runSQLMigrations(db *gorm.DB) error {
+	migrationFile := os.Getenv("SQL_MIGRATION_FILE")
+	if migrationFile == "" {
+		execPath, _ := os.Executable()
+		dir := filepath.Dir(execPath)
+		migrationFile = filepath.Join(dir, "db", "migrations.sql")
+	}
+
+	content, err := os.ReadFile(migrationFile)
+	if err != nil {
+		log.Printf("SQL migration file not found at %s (skipping)", migrationFile)
+		return nil
+	}
+
+	if err := db.Exec(string(content)).Error; err != nil {
+		return fmt.Errorf("failed to execute migration: %w", err)
+	}
+
+	log.Println("SQL migrations completed successfully")
+	return nil
 }
