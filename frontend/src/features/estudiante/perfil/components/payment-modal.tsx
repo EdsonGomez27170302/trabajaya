@@ -33,7 +33,12 @@ export function PaymentModal({ amount, onSuccess, onClose }: Props) {
         )}
 
         {ready ? (
-          <CardPayment initialization={{ amount }} onSubmit={handleSubmit} onError={handleError} />
+          <CardPayment
+            initialization={{ amount }}
+            customization={{ paymentMethods: { minInstallments: 1, maxInstallments: 1 } }}
+            onSubmit={handleSubmit}
+            onError={handleError}
+          />
         ) : (
           <div className="flex items-center justify-center py-8">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
