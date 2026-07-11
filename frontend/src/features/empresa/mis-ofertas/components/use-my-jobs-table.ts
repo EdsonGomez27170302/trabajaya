@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { api } from "@/lib/api";
 import type { Job } from "@/types";
@@ -11,13 +11,27 @@ export function useMyJobsTable() {
   const [error, setError] = useState("");
   const [featureError, setFeatureError] = useState("");
   const [featuringId, setFeaturingId] = useState<number | null>(null);
+  const awaitingPayment = useRef(false);
 
-  useEffect(() => {
-    api
+  function loadJobs() {
+    return api
       .get<{ data: Job[] } | Job[]>("/company/jobs")
       .then(({ data: raw }) => setJobs(Array.isArray(raw) ? raw : (raw as { data: Job[] }).data ?? []))
-      .catch(() => setError("No se pudieron cargar las ofertas."))
-      .finally(() => setLoading(false));
+      .catch(() => setError("No se pudieron cargar las ofertas."));
+  }
+
+  useEffect(() => {
+    loadJobs().finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    function onFocus() {
+      if (!awaitingPayment.current) return;
+      awaitingPayment.current = false;
+      loadJobs();
+    }
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
   }, []);
 
   async function handleToggle(job: Job) {
@@ -37,7 +51,9 @@ export function useMyJobsTable() {
       const { data } = await api.post<{ init_point: string }>("/company/payment/create-preference", {
         job_id: job.id,
       });
-      window.location.href = data.init_point;
+      window.open(data.init_point, "_blank", "noopener,noreferrer");
+      awaitingPayment.current = true;
+      setFeaturingId(null);
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??

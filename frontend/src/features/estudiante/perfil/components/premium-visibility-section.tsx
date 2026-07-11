@@ -4,9 +4,13 @@ import { Star } from "lucide-react";
 
 export function PremiumVisibilitySection({
   isFeatured,
+  boosting,
+  boostError,
   onBoost,
 }: {
   isFeatured: boolean;
+  boosting: boolean;
+  boostError: string;
   onBoost: () => void;
 }) {
   return (
@@ -41,11 +45,13 @@ export function PremiumVisibilitySection({
           <button
             type="button"
             onClick={onBoost}
-            className="inline-flex w-fit items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-amber-600"
+            disabled={boosting}
+            className="inline-flex w-fit items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-amber-600 disabled:opacity-60"
           >
             <Star className="size-4 fill-white" />
-            {`Destacar mi perfil — S/ ${(5.0).toFixed(2)}`}
+            {boosting ? "Redirigiendo…" : `Destacar mi perfil — S/ ${(5.0).toFixed(2)}`}
           </button>
+          {boostError && <p className="text-xs text-red-600 dark:text-red-400">{boostError}</p>}
           <p className="text-xs text-muted-foreground">Pago único mediante MercadoPago.</p>
         </div>
       )}

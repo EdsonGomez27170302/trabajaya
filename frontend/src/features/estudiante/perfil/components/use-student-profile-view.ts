@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,7 +14,8 @@ import { useLoadProfile } from "./use-load-profile";
 export function useStudentProfileView() {
   const updateProfile = useAuthStore((s) => s.updateProfile);
   const [saved, setSaved] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
+  const [boosting, setBoosting] = useState(false);
+  const [boostError, setBoostError] = useState("");
   const { availability, setAvailability, toggleTurno } = useProfileAvailability();
 
   const {
@@ -25,14 +26,36 @@ export function useStudentProfileView() {
   } = useForm<ProfileFormData>({ resolver: zodResolver(profileFormSchema) });
 
   const { profile, setProfile, loading, serverError, setServerError } = useLoadProfile(reset, setAvailability);
+  const awaitingPayment = useRef(false);
 
-  function handleBoost() {
-    setShowPayment(true);
-  }
+  useEffect(() => {
+    function onFocus() {
+      if (!awaitingPayment.current) return;
+      awaitingPayment.current = false;
+      api
+        .get<StudentProfile>("/student/profile")
+        .then(({ data }) => setProfile(data))
+        .catch(() => {});
+    }
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [setProfile]);
 
-  function handlePaymentSuccess() {
-    setShowPayment(false);
-    setProfile((prev) => (prev ? { ...prev, is_featured: true } : prev));
+  async function handleBoost() {
+    setBoostError("");
+    setBoosting(true);
+    try {
+      const { data } = await api.post<{ init_point: string }>("/student/payment/create-preference");
+      window.open(data.init_point, "_blank", "noopener,noreferrer");
+      awaitingPayment.current = true;
+      setBoosting(false);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??
+        "No se pudo iniciar el pago. Intenta de nuevo.";
+      setBoostError(msg);
+      setBoosting(false);
+    }
   }
 
   async function onSubmit(data: ProfileFormData) {
@@ -54,15 +77,14 @@ export function useStudentProfileView() {
     saved,
     serverError,
     availability,
-    showPayment,
-    setShowPayment,
+    boosting,
+    boostError,
     register,
     handleSubmit,
     errors,
     isSubmitting,
     toggleTurno,
     handleBoost,
-    handlePaymentSuccess,
     onSubmit,
   };
 }

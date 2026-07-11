@@ -1,6 +1,5 @@
 "use client";
 
-import { PaymentModal } from "./payment-modal";
 import { PersonalDataSection } from "./personal-data-section";
 import { AvailabilitySection } from "./availability-section";
 import { VisibilitySection } from "./visibility-section";
@@ -16,15 +15,14 @@ export function StudentProfileView() {
     saved,
     serverError,
     availability,
-    showPayment,
-    setShowPayment,
+    boosting,
+    boostError,
     register,
     handleSubmit,
     errors,
     isSubmitting,
     toggleTurno,
     handleBoost,
-    handlePaymentSuccess,
     onSubmit,
   } = useStudentProfileView();
 
@@ -53,11 +51,12 @@ export function StudentProfileView() {
 
       {profile && <ProfilePreviewSection profile={profile} />}
 
-      <PremiumVisibilitySection isFeatured={!!profile?.is_featured} onBoost={handleBoost} />
-
-      {showPayment && (
-        <PaymentModal amount={5.0} onSuccess={handlePaymentSuccess} onClose={() => setShowPayment(false)} />
-      )}
+      <PremiumVisibilitySection
+        isFeatured={!!profile?.is_featured}
+        boosting={boosting}
+        boostError={boostError}
+        onBoost={handleBoost}
+      />
     </div>
   );
 }
