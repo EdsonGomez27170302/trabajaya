@@ -33,11 +33,13 @@ func (h *PaymentHandler) requireMercadoPago(c *gin.Context) bool {
 }
 
 type processPaymentReq struct {
-	Token           string `json:"token" binding:"required"`
-	PaymentMethodID string `json:"payment_method_id" binding:"required"`
-	Installments    int    `json:"installments" binding:"required"`
-	IssuerID        int64  `json:"issuer_id"`
-	Email           string `json:"email" binding:"required"`
+	Token                string `json:"token" binding:"required"`
+	PaymentMethodID      string `json:"payment_method_id" binding:"required"`
+	Installments         int    `json:"installments" binding:"required"`
+	IssuerID             int64  `json:"issuer_id"`
+	Email                string `json:"email" binding:"required"`
+	IdentificationType   string `json:"identification_type"`
+	IdentificationNumber string `json:"identification_number"`
 }
 
 func (req processPaymentReq) issuerID() string {
@@ -45,4 +47,11 @@ func (req processPaymentReq) issuerID() string {
 		return ""
 	}
 	return strconv.FormatInt(req.IssuerID, 10)
+}
+
+func (req processPaymentReq) identification() *payment.IdentificationRequest {
+	if req.IdentificationType == "" || req.IdentificationNumber == "" {
+		return nil
+	}
+	return &payment.IdentificationRequest{Type: req.IdentificationType, Number: req.IdentificationNumber}
 }

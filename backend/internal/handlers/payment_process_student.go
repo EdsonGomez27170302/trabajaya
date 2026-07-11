@@ -49,7 +49,7 @@ func (h *PaymentHandler) ProcessStudentPayment(c *gin.Context) {
 		PaymentMethodID:   req.PaymentMethodID,
 		IssuerID:          req.issuerID(),
 		ExternalReference: fmt.Sprintf("student:%d", userID),
-		Payer:             &payment.PayerRequest{Email: req.Email},
+		Payer:             &payment.PayerRequest{Email: req.Email, Identification: req.identification()},
 	})
 	if err != nil {
 		log.Printf("mercadopago: error procesando pago estudiante %d: %v", userID, err)

@@ -52,7 +52,7 @@ func (h *PaymentHandler) ProcessCompanyPayment(c *gin.Context) {
 		PaymentMethodID:   body.PaymentMethodID,
 		IssuerID:          body.issuerID(),
 		ExternalReference: fmt.Sprintf("%d:%d", userID, body.JobID),
-		Payer:             &payment.PayerRequest{Email: body.Email},
+		Payer:             &payment.PayerRequest{Email: body.Email, Identification: body.identification()},
 	})
 	if err != nil {
 		log.Printf("mercadopago: error procesando pago empresa %d job %d: %v", userID, body.JobID, err)

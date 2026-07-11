@@ -18,6 +18,8 @@ export async function processCardPayment(fd: MPPayload) {
     installments: fd.installments || 1,
     issuer_id: Number(fd.issuer_id) || 0,
     email: fd.payer?.email ?? "",
+    identification_type: fd.payer?.identification?.type ?? "",
+    identification_number: fd.payer?.identification?.number ?? "",
   });
   return data;
 }
