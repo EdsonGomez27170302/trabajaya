@@ -123,7 +123,8 @@ INSERT INTO users (username, email, password_hash, role, is_verified, is_active)
 ('diego.ramos',    'diego.ramos@gmail.com',    '$2a$10$f7r5gUQjSok2URr55s2/auJANmgde/fLfXmE9R7HquG4c5PqMRnhi', 'student', true, true),
 ('rosa.tinco',     'rosa.tinco@gmail.com',     '$2a$10$f7r5gUQjSok2URr55s2/auJANmgde/fLfXmE9R7HquG4c5PqMRnhi', 'student', true, true),
 ('jhon.pariona',   'jhon.pariona@gmail.com',   '$2a$10$f7r5gUQjSok2URr55s2/auJANmgde/fLfXmE9R7HquG4c5PqMRnhi', 'student', true, true),
-('admin', 'admin@trabajaya.pe', '$2a$10$f7r5gUQjSok2URr55s2/auJANmgde/fLfXmE9R7HquG4c5PqMRnhi', 'admin', true, true);
+('admin', 'admin@trabajaya.pe', '$2a$10$f7r5gUQjSok2URr55s2/auJANmgde/fLfXmE9R7HquG4c5PqMRnhi', 'admin', true, true)
+ON CONFLICT (username) DO NOTHING;
 
 INSERT INTO company_profiles (user_id, company_name, ruc, sector, description, address, zone, phone, website, logo_url, is_verified, plan) VALUES
 (1, 'ServiExpress Ayacucho',   '20601234561', 'Servicios y logística', 'Empresa de mensajería y delivery en la ciudad de Ayacucho.', 'Jr. Asamblea 245', 'Huamanga', '066-312345', 'https://serviexpress.pe', '/uploads/companies/empresa-1.jpg', true, 'free'),
@@ -131,7 +132,8 @@ INSERT INTO company_profiles (user_id, company_name, ruc, sector, description, a
 (3, 'Tienda Ayacucho Center',  '20601234563', 'Comercio retail', 'Centro comercial con tiendas de ropa, electrónica y abarrotes.', 'Jr. Lima 320', 'Centro', '066-312347', 'https://ayacuchocenter.pe', '/uploads/companies/empresa-3.jpg', true, 'premium'),
 (4, 'Constructora Wari',       '20601234564', 'Construcción', 'Empresa constructora de obras civiles y proyectos de vivienda.', 'Av. Mariscal Cáceres 102', 'Jesús Nazareno', '066-312348', 'https://constructorawari.pe', '/uploads/companies/empresa-4.jpg', true, 'free'),
 (5, 'TechSoluciones Ayacucho', '20601234565', 'Tecnología', 'Desarrollo de software, soporte técnico y marketing digital para negocios locales.', 'Jr. 28 de Julio 415', 'Centro', '066-312349', 'https://techsolucionesayacucho.pe', '/uploads/companies/empresa-5.jpg', true, 'premium'),
-(6, 'AgroAndina Perú',         '20601234566', 'Agroindustria', 'Procesamiento y comercialización de productos agrícolas andinos.', 'Carretera a Quinua km 5', 'Socos', '066-312350', 'https://agroandina.pe', '/uploads/companies/empresa-6.jpg', false, 'free');
+(6, 'AgroAndina Perú',         '20601234566', 'Agroindustria', 'Procesamiento y comercialización de productos agrícolas andinos.', 'Carretera a Quinua km 5', 'Socos', '066-312350', 'https://agroandina.pe', '/uploads/companies/empresa-6.jpg', false, 'free')
+ON CONFLICT (user_id) DO NOTHING;
 
 INSERT INTO student_profiles (user_id, first_name, last_name, institutional_email, faculty, career, semester, phone, bio, cv_url, availability, zone, profile_photo, is_available) VALUES
 (7,  'María', 'Quispe Huamán',      'maria.quispe@unsch.edu.pe',   'Facultad de Ingeniería de Minas, Geología y Civil',     'Ingeniería de Sistemas',     7, '966111222', 'Estudiante de Ingeniería de Sistemas, interesada en desarrollo web y atención al cliente.', '', '{"lunes":["14:00-18:00"],"martes":["14:00-18:00"],"miercoles":["14:00-18:00"]}'::jsonb, 'Centro', '/uploads/students/estudiante-1.jpg', true),
@@ -141,7 +143,8 @@ INSERT INTO student_profiles (user_id, first_name, last_name, institutional_emai
 (11, 'Carla', 'Palomino Vega',      'carla.palomino@unsch.edu.pe', 'Facultad de Derecho y Ciencias Políticas',              'Derecho',                    6, '966111226', 'Estudiante de Derecho con interés en temas administrativos y atención al público.', '', '{"martes":["08:00-12:00"],"jueves":["08:00-12:00"]}'::jsonb, 'Andrés Avelino Cáceres', '/uploads/students/estudiante-5.jpg', true),
 (12, 'Diego', 'Ramos Curi',         'diego.ramos@unsch.edu.pe',    'Facultad de Ingeniería de Minas, Geología y Civil',     'Ingeniería Civil',           9, '966111227', 'Practicante de Ingeniería Civil con conocimientos en AutoCAD y supervisión de obra.', '', '{"lunes":["08:00-17:00"],"martes":["08:00-17:00"],"miercoles":["08:00-17:00"]}'::jsonb, 'Centro', '/uploads/students/estudiante-6.jpg', true),
 (13, 'Rosa', 'Tinco Allccahuamán',  'rosa.tinco@unsch.edu.pe',     'Facultad de Enfermería',                                'Enfermería',                 5, '966111228', 'Disponible para trabajos de fin de semana y apoyo en campañas de salud.', '', '{"sabado":["08:00-13:00"],"domingo":["08:00-13:00"]}'::jsonb, 'Socos', '/uploads/students/estudiante-7.jpg', true),
-(14, 'Jhon', 'Pariona Espinoza',    'jhon.pariona@unsch.edu.pe',   'Facultad de Ciencias Agrarias',                         'Ingeniería Agroindustrial',  6, '966111229', 'Interesado en procesos agroindustriales y control de calidad.', '', '{"lunes":["07:00-13:00"],"martes":["07:00-13:00"],"miercoles":["07:00-13:00"]}'::jsonb, 'Quinua', '/uploads/students/estudiante-8.jpg', true);
+(14, 'Jhon', 'Pariona Espinoza',    'jhon.pariona@unsch.edu.pe',   'Facultad de Ciencias Agrarias',                         'Ingeniería Agroindustrial',  6, '966111229', 'Interesado en procesos agroindustriales y control de calidad.', '', '{"lunes":["07:00-13:00"],"martes":["07:00-13:00"],"miercoles":["07:00-13:00"]}'::jsonb, 'Quinua', '/uploads/students/estudiante-8.jpg', true)
+ON CONFLICT (user_id) DO NOTHING;
 
 INSERT INTO jobs (company_id, title, description, requirements, category, modality, zone, salary, salary_type, hours_per_week, schedule, vacancies, status, is_featured, views_count, expires_at, created_at) VALUES
 (1, 'Mensajería y apoyo administrativo', 'Reparto de documentos y paquetes pequeños en la zona de Huamanga, además de apoyo en tareas de oficina.', 'Disponibilidad en las mañanas, conocimiento básico de la ciudad, responsabilidad.', 'Logística', 'presencial', 'Huamanga', 18.00, 'por_hora', 20, '{"lunes":["08:00-12:00"],"martes":["08:00-12:00"],"miercoles":["08:00-12:00"],"jueves":["08:00-12:00"],"viernes":["08:00-12:00"]}'::jsonb, 2, 'active', false, 34, now() + interval '30 days', now() - interval '10 days'),
@@ -168,7 +171,8 @@ INSERT INTO jobs (company_id, title, description, requirements, category, modali
 
 (6, 'Asistente de campo agroindustrial', 'Apoyo en labores de campo y procesamiento inicial de productos agrícolas.', 'Disponibilidad de mañana, gusto por el trabajo de campo.', 'Agro', 'presencial', 'Socos', 17.00, 'por_hora', 24, '{"lunes":["06:00-12:00"],"martes":["06:00-12:00"],"miercoles":["06:00-12:00"]}'::jsonb, 3, 'active', false, 26, now() + interval '22 days', now() - interval '4 days'),
 (6, 'Auxiliar de control de calidad', 'Apoyo en el control de calidad de productos agroindustriales antes de su empaque.', 'Estudiante de carreras afines a agroindustria o alimentos.', 'Agro', 'presencial', 'Socos', 1100.00, 'mensual', 30, '{"lunes":["07:00-13:00"],"miercoles":["07:00-13:00"],"viernes":["07:00-13:00"]}'::jsonb, 1, 'active', false, 18, now() + interval '25 days', now() - interval '3 days'),
-(6, 'Encuestador/a para estudio de mercado', 'Aplicación de encuestas presenciales para estudio de consumo en la zona de Andrés Avelino Cáceres.', 'Buena comunicación, disponibilidad un fin de semana.', 'Marketing', 'presencial', 'Andrés Avelino Cáceres', 15.00, 'por_hora', 16, '{"sabado":["09:00-17:00"]}'::jsonb, 4, 'closed', false, 41, now() - interval '5 days', now() - interval '20 days');
+(6, 'Encuestador/a para estudio de mercado', 'Aplicación de encuestas presenciales para estudio de consumo en la zona de Andrés Avelino Cáceres.', 'Buena comunicación, disponibilidad un fin de semana.', 'Marketing', 'presencial', 'Andrés Avelino Cáceres', 15.00, 'por_hora', 16, '{"sabado":["09:00-17:00"]}'::jsonb, 4, 'closed', false, 41, now() - interval '5 days', now() - interval '20 days')
+ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO applications (job_id, student_id, cover_letter, status, created_at) VALUES
 (7,  1, 'Me interesa el puesto de ventas, tengo disponibilidad las tardes y me gusta la atención al cliente.', 'accepted', now() - interval '10 days'),
@@ -182,7 +186,8 @@ INSERT INTO applications (job_id, student_id, cover_letter, status, created_at) 
 (16, 4, 'Me interesa el puesto de marketing digital, manejo redes sociales y herramientas básicas de diseño.', 'pending', now() - interval '1 days'),
 (8,  5, 'Tengo disponibilidad en las mañanas de lunes a sábado para el puesto de vendedor/a.', 'viewed', now() - interval '2 days'),
 (15, 7, 'Tengo conocimientos básicos de soporte técnico y disponibilidad por las tardes.', 'pending', now() - interval '3 days'),
-(18, 8, 'Soy estudiante de Ingeniería Agroindustrial y me interesa mucho el trabajo de campo.', 'pending', now() - interval '2 days');
+(18, 8, 'Soy estudiante de Ingeniería Agroindustrial y me interesa mucho el trabajo de campo.', 'pending', now() - interval '2 days')
+ON CONFLICT (job_id, student_id) DO NOTHING;
 
 INSERT INTO notifications (user_id, title, message, type, is_read, link, created_at) VALUES
 (7,  '¡Postulación aceptada!', 'Tu postulación a "Asistente de ventas por horas" fue aceptada.', 'application_update', false, '/estudiante/postulaciones', now() - interval '9 days'),
@@ -194,6 +199,7 @@ INSERT INTO notifications (user_id, title, message, type, is_read, link, created
 (11, 'Tu postulación fue revisada', 'La empresa revisó tu postulación a "Vendedor/a de tienda - turno mañana".', 'application_update', false, '/estudiante/postulaciones', now() - interval '2 days'),
 (3,  'Nuevo candidato', 'Tienes nuevos candidatos para "Asistente de ventas por horas".', 'system', false, '/empresa/candidatos/7', now() - interval '3 days'),
 (5,  'Nuevo candidato', 'Tienes un nuevo candidato para "Practicante de Desarrollo Web".', 'system', false, '/empresa/candidatos/14', now() - interval '2 days'),
-(15, 'Empresa pendiente de verificación', 'AgroAndina Perú está esperando verificación de RUC.', 'system', false, '/admin/usuarios', now() - interval '7 days');
+(15, 'Empresa pendiente de verificación', 'AgroAndina Perú está esperando verificación de RUC.', 'system', false, '/admin/usuarios', now() - interval '7 days')
+ON CONFLICT DO NOTHING;
 
 COMMIT;
