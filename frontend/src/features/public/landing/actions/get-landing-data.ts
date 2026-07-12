@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { serverApi } from "@/lib/server-api";
 import type { Job, StudentProfile } from "@/types";
 
 export interface PlatformStats {
@@ -15,7 +15,7 @@ const FALLBACK_STATS: PlatformStats = {
 
 export async function getPlatformStats(): Promise<PlatformStats> {
   try {
-    const { data } = await api.get<PlatformStats>("/stats");
+    const { data } = await serverApi.get<PlatformStats>("stats");
     return data;
   } catch {
     return FALLBACK_STATS;
@@ -26,7 +26,7 @@ export async function getLatestJobs(search?: string): Promise<Job[]> {
   try {
     const params: Record<string, string> = {};
     if (search) params.search = search;
-    const { data } = await api.get<{ data: Job[] }>("/jobs", { params });
+    const { data } = await serverApi.get<{ data: Job[] }>("jobs", { params });
     return data.data ?? [];
   } catch {
     return [];
@@ -35,7 +35,7 @@ export async function getLatestJobs(search?: string): Promise<Job[]> {
 
 export async function getAvailableStudents(): Promise<StudentProfile[]> {
   try {
-    const { data } = await api.get<{ data: StudentProfile[] }>("/students");
+    const { data } = await serverApi.get<{ data: StudentProfile[] }>("students");
     return data.data ?? [];
   } catch {
     return [];
