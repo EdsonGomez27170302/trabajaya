@@ -43,6 +43,10 @@ export function MainTabsSection({ jobs, students }: Props) {
           />
         )}
 
+        {tab === "todas" && (
+          <StudentsPanel students={students} onSelectStudent={setSelectedStudent} />
+        )}
+
         {tab === "empresa" && <StudentsPanel students={students} onSelectStudent={setSelectedStudent} />}
       </section>
     </>
