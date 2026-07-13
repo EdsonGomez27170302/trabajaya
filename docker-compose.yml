@@ -34,8 +34,8 @@ services:
       DB_SSLMODE: disable
       JWT_SECRET: d97990f49f564b8c982be5cfe17264db2bdc8323e9a461d75e31c719adb8d3a
       JWT_EXPIRES_HOURS: "72"
-      FRONTEND_URL: http://ec2-98-93-198-207.compute-1.amazonaws.com
-      CORS_ORIGIN: http://ec2-98-93-198-207.compute-1.amazonaws.com
+      FRONTEND_URL: http://ec2-54-152-115-100.compute-1.amazonaws.com
+      CORS_ORIGIN: http://ec2-54-152-115-100.compute-1.amazonaws.com
       INSTITUTIONAL_EMAIL_DOMAIN: unsch.edu.pe
       UPLOADS_DIR: /app/uploads
       MERCADOPAGO_MODE: test
